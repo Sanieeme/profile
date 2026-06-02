@@ -98,19 +98,20 @@ ul {
 }
 
 .profile-img {
-    width: 240px;
-    height: 240px;
+    width: clamp(160px, 20vw, 240px);
+    height: clamp(160px, 20vw, 240px);
+
     object-fit: cover;
     border-radius: 50%;
+
     border: 5px solid #d4af37;
 
     box-shadow:
         0 0 25px rgba(212, 175, 55, 0.5),
         0 0 70px rgba(212, 175, 55, 0.15);
 
-    margin-bottom: 30px;
-
-    animation: floatGlow 4s ease-in-out infinite;
+    display: block;
+    margin: 0 auto 30px auto;
 }
 
 /* FLOAT ANIMATION */
