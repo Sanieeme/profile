@@ -1,0 +1,698 @@
+/* =========================================================
+   HERO REDESIGN
+   Split layout · arch portrait · orbiting tech-stack chips
+   Loads AFTER style.css and overrides the old centred hero.
+   Palette stays black & gold (tokens come from style.css).
+========================================================= */
+
+.hero.hero--split {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 100vh;
+    min-height: 100svh;
+
+    padding: 130px clamp(20px, 6vw, 90px) 90px;
+
+    text-align: left;
+
+    background: var(--color-black);
+}
+
+/* old centred glow is replaced by .hero-aurora */
+.hero.hero--split::before {
+    display: none;
+}
+
+/* ---------------------------------------------------------
+   AMBIENT BACKGROUND
+--------------------------------------------------------- */
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.hero-grid {
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 54px 54px;
+
+    -webkit-mask-image: radial-gradient(ellipse 70% 65% at 68% 45%, #000 15%, transparent 75%);
+            mask-image: radial-gradient(ellipse 70% 65% at 68% 45%, #000 15%, transparent 75%);
+}
+
+.hero-aurora {
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(520px 420px at 72% 42%, rgba(212, 175, 55, 0.17), transparent 70%),
+        radial-gradient(420px 360px at 88% 85%, rgba(160, 96, 30, 0.14), transparent 70%),
+        radial-gradient(380px 320px at 8% 12%, rgba(212, 175, 55, 0.07), transparent 70%);
+
+    animation: auroraShift 18s ease-in-out infinite alternate;
+}
+
+@keyframes auroraShift {
+    to {
+        transform: translate3d(-18px, 14px, 0) scale(1.04);
+    }
+}
+
+/* faint floating code glyphs */
+
+.glyph {
+    position: absolute;
+
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-weight: 600;
+    color: rgba(212, 175, 55, 0.11);
+    white-space: nowrap;
+    user-select: none;
+
+    animation: glyphFloat var(--gt, 16s) ease-in-out infinite alternate;
+}
+
+.g1 { left: 4%;  top: 24%; font-size: 2.2rem; --gt: 15s; }
+.g2 { left: 44%; top: 12%; font-size: 3rem;   --gt: 19s; }
+.g3 { left: 38%; top: 84%; font-size: 1.1rem; --gt: 17s; }
+.g4 { left: 2%;  top: 91%; font-size: 1.2rem; --gt: 21s; }
+.g5 { left: 52%; top: 70%; font-size: 1rem;   --gt: 14s; }
+.g6 { left: 92%; top: 22%; font-size: 2rem;   --gt: 18s; }
+
+@keyframes glyphFloat {
+    from { transform: translate3d(0, 0, 0) rotate(-3deg); }
+    to   { transform: translate3d(14px, -26px, 0) rotate(4deg); }
+}
+
+/* ---------------------------------------------------------
+   LAYOUT
+--------------------------------------------------------- */
+
+.hero-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    align-items: center;
+    gap: clamp(30px, 4vw, 70px);
+
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.hero--split .hero-text {
+    position: relative;
+    z-index: 5;
+}
+
+/* ---------------------------------------------------------
+   TEXT
+--------------------------------------------------------- */
+
+.hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 22px !important;
+    padding: 7px 16px 7px 12px;
+
+    border: 1px solid var(--border-gold);
+    border-radius: 999px;
+    background: rgba(212, 175, 55, 0.06);
+
+    color: var(--color-gold-light);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+}
+
+.hero-eyebrow b {
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+.pulse {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-gold);
+}
+
+.pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--color-gold);
+    animation: pulse 2.2s ease-out infinite;
+}
+
+@keyframes pulse {
+    from { transform: scale(1);   opacity: 0.7; }
+    to   { transform: scale(3.2); opacity: 0; }
+}
+
+.hero.hero--split .hero-text h1 {
+    margin-bottom: 14px;
+
+    font-size: clamp(2.3rem, 4.7vw, 4.2rem);
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    overflow-wrap: anywhere;
+}
+
+.hero--split .grad {
+    background: linear-gradient(100deg, var(--color-gold-light) 10%, var(--color-gold) 55%, #fff1b8 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+            color: transparent;
+}
+
+.hero--split .dot {
+    color: var(--color-gold);
+}
+
+.hero.hero--split .hero-text h2 {
+    margin-bottom: 18px;
+    font-size: clamp(1.05rem, 1.9vw, 1.45rem);
+}
+
+/* serif pull-quote (from the case-file page) */
+
+.hero-quote {
+    margin: 0 0 16px;
+
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: clamp(1.45rem, 2.6vw, 2.05rem);
+    line-height: 1.25;
+    color: var(--color-text);
+    text-wrap: balance;
+}
+
+.hero-quote em {
+    color: var(--color-gold);
+}
+
+.hero.hero--split .hero-description {
+    max-width: 540px;
+    margin: 0 0 30px;
+    font-size: 1rem;
+    line-height: 1.85;
+}
+
+.hero.hero--split .hero-buttons {
+    justify-content: flex-start;
+    margin-bottom: 28px;
+}
+
+.hero.hero--split .social-links {
+    justify-content: flex-start;
+    margin-bottom: 0;
+    gap: 10px;
+    flex-direction: row;
+}
+
+.hero.hero--split .social-links a {
+    gap: 8px;
+    width: auto;
+    min-width: 0;
+    padding: 9px 18px;
+    font-size: 0.85rem;
+}
+
+/* ---------------------------------------------------------
+   STAGE: portrait + orbits
+--------------------------------------------------------- */
+
+.hero-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stage {
+    --s: clamp(320px, 41vw, 580px);   /* overall stage size       */
+    --dA: calc(var(--s) * 0.76);      /* inner ring diameter      */
+    --dB: calc(var(--s) * 1);         /* outer ring diameter      */
+
+    position: relative;
+    width: var(--s);
+    height: var(--s);
+    flex: none;
+}
+
+.stage-glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 70%;
+    height: 70%;
+    transform: translate(-50%, -50%);
+
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.28), transparent 68%);
+    filter: blur(30px);
+}
+
+/* ---- the single Rorschach plate ---- */
+
+.portrait {
+    --rx: 0deg;
+    --ry: 0deg;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+
+    width: calc(var(--s) * 0.46);
+
+    transform: translate(-50%, -50%) perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+    transition: transform 0.35s ease-out;
+    will-change: transform;
+}
+
+.plate {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 4 / 5;
+
+    border: 1px solid rgba(168, 135, 31, 0.6);
+    border-radius: 3px;
+
+    /* warm printed-card paper */
+    background:
+        radial-gradient(120% 90% at 28% 12%, #fbf6e6 0%, #efe6cf 62%, #e3d6b4 100%);
+
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.65),
+        0 0 70px rgba(212, 175, 55, 0.22),
+        inset 0 0 44px rgba(120, 90, 20, 0.14);
+
+    animation: portraitFloat 7s ease-in-out infinite;
+}
+
+.plate canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.plate .tag {
+    position: absolute;
+
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #2a2110;
+    opacity: 0.72;
+}
+
+.plate .tag.l { top: 11px;    left: 14px; }
+.plate .tag.r { bottom: 11px; right: 14px; }
+
+.plate noscript img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@keyframes portraitFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+}
+
+.plate-caption {
+    max-width: 420px;
+    margin-top: 26px;
+    text-align: center;
+
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+}
+
+.plate-caption span {
+    color: var(--color-gold-light);
+}
+
+/* ---- orbits ---- */
+
+.orbit {
+    --t: 70s;
+    --dir: normal;
+    --d: var(--dA);
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--d);
+    height: var(--d);
+    margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2);
+
+    border: 1px dashed rgba(212, 175, 55, 0.2);
+    border-radius: 50%;
+    pointer-events: none;
+
+    animation: spin var(--t) linear infinite var(--dir);
+}
+
+.orbit--a {
+    --d: var(--dA);
+    --t: 64s;
+    z-index: 1;                       /* tucks behind the portrait */
+}
+
+.orbit--b {
+    --d: var(--dB);
+    --t: 96s;
+    --dir: reverse;
+    z-index: 3;
+    border-color: rgba(212, 175, 55, 0.12);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.slot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+
+    transform: rotate(var(--a)) translateX(calc(var(--d) / 2));
+}
+
+/* ---- chips ---- */
+
+.chip {
+    --a: 0deg;
+    --c: var(--color-gold);
+
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 5px 12px 5px 5px;
+
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    border-radius: 999px;
+    background: rgba(14, 14, 14, 0.74);
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+
+    color: var(--color-text);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.45),
+        0 0 16px color-mix(in srgb, var(--c) 16%, transparent);
+
+    pointer-events: auto;
+    cursor: default;
+
+    /* stay upright while the ring turns */
+    transform: translate(-50%, -50%) rotate(calc(var(--a) * -1));
+    animation: unspin var(--t, 70s) linear infinite var(--dir, normal);
+
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.chip i {
+    display: grid;
+    place-items: center;
+
+    width: 22px;
+    height: 22px;
+    flex: none;
+
+    border-radius: 50%;
+    background: var(--c);
+
+    color: #0b0b0b;
+    font-style: normal;
+    font-size: 0.56rem;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+}
+
+.chip:hover {
+    border-color: var(--c);
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.5),
+        0 0 22px color-mix(in srgb, var(--c) 40%, transparent);
+}
+
+@keyframes unspin {
+    from { transform: translate(-50%, -50%) rotate(calc(var(--a) * -1)); }
+    to   { transform: translate(-50%, -50%) rotate(calc(var(--a) * -1 - 360deg)); }
+}
+
+/* pause everything when the visitor hovers the stage, so a chip is easy to read */
+
+.stage:hover .orbit,
+.stage:hover .chip,
+.stage:hover .drift .chip {
+    animation-play-state: paused;
+}
+
+/* ---- free-floating chips in the corners ---- */
+
+.drift {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.drift .chip {
+    --a: 0deg;
+
+    left: var(--x);
+    top: var(--y);
+
+    padding: 4px 10px 4px 4px;
+    font-size: 0.66rem;
+    opacity: 0.88;
+
+    transform: translate(-50%, -50%);
+    animation: bob var(--bt, 7s) ease-in-out var(--bd, 0s) infinite alternate;
+}
+
+.drift .chip i {
+    width: 19px;
+    height: 19px;
+    font-size: 0.5rem;
+}
+
+@keyframes bob {
+    from { transform: translate(-50%, -50%) translateY(-7px) rotate(-1.5deg); }
+    to   { transform: translate(-50%, -50%) translateY(8px)  rotate(1.5deg); }
+}
+
+/* ---------------------------------------------------------
+   SCROLL CUE
+--------------------------------------------------------- */
+
+.scroll-cue {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    z-index: 6;
+    transform: translateX(-50%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--color-text-muted);
+    font-size: 0.66rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+
+    transition: color 0.25s ease;
+}
+
+.scroll-cue:hover {
+    color: var(--color-gold-light);
+}
+
+.scroll-cue i {
+    position: relative;
+    width: 1.5px;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.14);
+    overflow: hidden;
+}
+
+.scroll-cue i::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -14px;
+    width: 100%;
+    height: 14px;
+    background: var(--color-gold);
+    animation: cue 2s ease-in-out infinite;
+}
+
+@keyframes cue {
+    to { transform: translateY(52px); }
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+--------------------------------------------------------- */
+
+
+@media (max-width: 900px) {
+    .hero.hero--split {
+        padding: 150px 20px 90px;
+        text-align: center;
+    }
+
+    .hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 34px;
+    }
+
+    .hero-visual {
+        order: -1;
+    }
+
+    .stage {
+        --s: min(82vw, 440px);
+        --dB: calc(var(--s) * 0.96);
+    }
+
+    .hero-eyebrow {
+        font-size: 0.66rem;
+        letter-spacing: 1.6px;
+    }
+
+    .hero.hero--split .hero-description {
+        margin: 0 auto 28px;
+        font-size: 0.95rem;
+    }
+
+    .hero.hero--split .hero-buttons,
+    .hero.hero--split .social-links {
+        justify-content: center;
+    }
+
+    .hero.hero--split .hero-buttons {
+        flex-direction: row;
+        width: auto;
+    }
+
+    .hero.hero--split .hero-buttons .btn-primary,
+    .hero.hero--split .hero-buttons .btn-outline {
+        width: auto;
+    }
+
+    .scroll-cue {
+        display: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .hero.hero--split {
+        padding-top: 170px;
+    }
+
+    .stage {
+        --s: min(84vw, 360px);
+        --dA: calc(var(--s) * 0.74);
+        --dB: calc(var(--s) * 0.94);
+    }
+
+    .portrait {
+        width: calc(var(--s) * 0.5);
+    }
+
+    .chip {
+        gap: 5px;
+        padding: 4px 9px 4px 4px;
+        font-size: 0.62rem;
+    }
+
+    .chip i {
+        width: 18px;
+        height: 18px;
+        font-size: 0.5rem;
+    }
+
+    /* the badge would cover the photo on small screens */
+
+    .hero.hero--split .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero.hero--split .hero-buttons .btn-primary,
+    .hero.hero--split .hero-buttons .btn-outline {
+        width: min(100%, 280px);
+    }
+
+    .hero.hero--split .social-links a {
+        padding: 8px 14px;
+        font-size: 0.78rem;
+    }
+
+    .glyph.g2,
+    .glyph.g6 {
+        display: none;
+    }
+}
+
+/* ---------------------------------------------------------
+   REDUCED MOTION — chips stay put, nothing spins or bobs
+--------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .orbit,
+    .chip,
+    .drift .chip,
+    .glyph,
+    .hero-aurora,
+    .plate,
+    .pulse::after,
+    .scroll-cue i::after {
+        animation: none !important;
+    }
+
+    .portrait {
+        transition: none;
+    }
+}

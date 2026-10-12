@@ -1,0 +1,477 @@
+/* =========================================================
+   EXTRAS  ·  living background, collaborate builder,
+   command palette, local-time row
+========================================================= */
+
+/* ---------------------------------------------------------
+   LIVING BACKGROUND
+   1. a drifting data network with packets (canvas)
+   2. a colour glow that moves as you change section
+   3. faint ink blots in the margins (generated in JS)
+--------------------------------------------------------- */
+
+@property --gx { syntax: "<percentage>"; inherits: false; initial-value: 72%; }
+@property --gy { syntax: "<percentage>"; inherits: false; initial-value: 38%; }
+@property --gc { syntax: "<color>";      inherits: false; initial-value: rgba(212, 175, 55, 0.1); }
+
+.bg-net {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.bg-glow {
+    --gx: 72%;
+    --gy: 38%;
+    --gc: rgba(212, 175, 55, 0.1);
+
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background: radial-gradient(900px circle at var(--gx) var(--gy), var(--gc), transparent 65%);
+
+    transition: --gx 1.6s ease, --gy 1.6s ease, --gc 1.6s ease;
+}
+
+body[data-mood="work"]     .bg-glow { --gx: 12%; --gy: 40%; --gc: rgba(224, 160, 50, 0.1); }
+body[data-mood="backend"]  .bg-glow { --gx: 88%; --gy: 48%; --gc: rgba(58, 170, 150, 0.1); }
+body[data-mood="path"]     .bg-glow { --gx: 18%; --gy: 58%; --gc: rgba(200, 110, 60, 0.1); }
+body[data-mood="toolkit"]  .bg-glow { --gx: 84%; --gy: 42%; --gc: rgba(212, 175, 55, 0.11); }
+body[data-mood="notes"]    .bg-glow { --gx: 22%; --gy: 50%; --gc: rgba(210, 140, 120, 0.09); }
+body[data-mood="collab"]   .bg-glow { --gx: 50%; --gy: 35%; --gc: rgba(212, 175, 55, 0.14); }
+body[data-mood="contact"]  .bg-glow { --gx: 72%; --gy: 60%; --gc: rgba(212, 175, 55, 0.11); }
+
+:root[data-theme="light"] .bg-glow { --gc: rgba(212, 160, 40, 0.2); }
+:root[data-theme="light"] body[data-mood="work"]    .bg-glow { --gc: rgba(224, 150, 40, 0.2); }
+:root[data-theme="light"] body[data-mood="backend"] .bg-glow { --gc: rgba(58, 170, 150, 0.17); }
+:root[data-theme="light"] body[data-mood="path"]    .bg-glow { --gc: rgba(210, 110, 50, 0.17); }
+:root[data-theme="light"] body[data-mood="toolkit"] .bg-glow { --gc: rgba(212, 160, 40, 0.2); }
+:root[data-theme="light"] body[data-mood="notes"]   .bg-glow { --gc: rgba(210, 130, 110, 0.16); }
+:root[data-theme="light"] body[data-mood="collab"]  .bg-glow { --gc: rgba(212, 160, 40, 0.26); }
+:root[data-theme="light"] body[data-mood="contact"] .bg-glow { --gc: rgba(212, 160, 40, 0.2); }
+
+/* let the network show through the hero */
+.hero.hero--split {
+    background: transparent;
+}
+
+.cf section {
+    position: relative;
+}
+
+.ink-deco {
+    position: absolute;
+    z-index: -1;
+
+    width: clamp(220px, 30vw, 420px);
+    aspect-ratio: 1;
+
+    background: var(--accent, var(--color-gold));
+    opacity: 0.075;
+
+    -webkit-mask: var(--blot) center / contain no-repeat;
+            mask: var(--blot) center / contain no-repeat;
+
+    pointer-events: none;
+    animation: inkDrift 26s ease-in-out infinite alternate;
+}
+
+:root[data-theme="light"] .ink-deco {
+    opacity: 0.1;
+}
+
+.ink-deco.r { right: -4%; top: -30px; }
+.ink-deco.l { left: -4%;  top: -30px; }
+
+@keyframes inkDrift {
+    from { transform: translate3d(0, 0, 0) rotate(-6deg) scale(1); }
+    to   { transform: translate3d(0, 24px, 0) rotate(7deg) scale(1.06); }
+}
+
+/* keep the decorations from creating sideways scroll */
+.cf {
+    overflow-x: clip;
+}
+
+/* ---------------------------------------------------------
+   NAV — palette button
+--------------------------------------------------------- */
+
+.pal-btn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-left: clamp(10px, 1.6vw, 20px);
+    padding: 8px 12px;
+
+    border: 1px solid var(--border-gold);
+    border-radius: 999px;
+    background: rgba(212, 175, 55, 0.05);
+    color: var(--color-text-secondary);
+
+    font: 500 0.78rem/1 "Poppins", sans-serif;
+    cursor: pointer;
+
+    transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+
+.pal-btn:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold-light);
+}
+
+.pal-btn kbd {
+    padding: 2px 6px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 5px;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    font: 500 0.66rem/1.2 "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@media (max-width: 900px) {
+    .pal-btn {
+        display: none;
+    }
+}
+
+/* ---------------------------------------------------------
+   COMMAND PALETTE
+--------------------------------------------------------- */
+
+.palette {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+
+    display: grid;
+    justify-items: center;
+    align-items: start;
+    padding: 14vh 16px 16px;
+
+    background: rgba(0, 0, 0, 0.55);
+    -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+}
+
+.palette[hidden] {
+    display: none;
+}
+
+:root[data-theme="light"] .palette {
+    background: rgba(40, 28, 0, 0.35);
+}
+
+.pal-box {
+    width: min(620px, 100%);
+    max-height: 70vh;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+
+    border: 1px solid var(--border-gold-strong);
+    border-radius: 14px;
+    overflow: hidden;
+
+    background: var(--color-surface);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+
+    animation: palIn 0.22s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+@keyframes palIn {
+    from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+    to   { opacity: 1; transform: none; }
+}
+
+.pal-box input {
+    width: 100%;
+    padding: 18px 20px;
+
+    border: 0;
+    border-bottom: 1px solid var(--border-subtle);
+    outline: 0;
+    background: none;
+    color: var(--color-white);
+    font: 400 1.02rem/1.3 "Poppins", sans-serif;
+}
+
+.pal-list {
+    margin: 0;
+    padding: 6px;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.pal-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+
+    padding: 11px 14px;
+    border-radius: 9px;
+
+    color: var(--color-text);
+    font-size: 0.92rem;
+    cursor: pointer;
+}
+
+.pal-list li small {
+    color: var(--color-text-muted);
+    font: 400 0.7rem/1 "IBM Plex Mono", ui-monospace, monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.pal-list li[aria-selected="true"] {
+    background: var(--color-gold);
+    color: var(--color-black);
+}
+
+:root[data-theme="light"] .pal-list li[aria-selected="true"] {
+    color: #fff;
+}
+
+.pal-list li[aria-selected="true"] small {
+    color: inherit;
+    opacity: 0.8;
+}
+
+.pal-empty {
+    padding: 20px;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.pal-hint {
+    margin: 0;
+    padding: 10px 18px;
+    border-top: 1px solid var(--border-subtle);
+    color: var(--color-text-muted);
+    font: 400 0.7rem/1.4 "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* ---------------------------------------------------------
+   COLLABORATE — "build your first email"
+--------------------------------------------------------- */
+
+.cf .collab-block {
+    padding-block: clamp(48px, 8vw, 96px);
+    border-top: 1px solid var(--line);
+}
+
+.cf .collab {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(20px, 3vw, 40px);
+    align-items: stretch;
+}
+
+.cf .brief,
+.cf .letter {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg2);
+}
+
+.cf .brief {
+    display: grid;
+    gap: 22px;
+    align-content: start;
+    padding: clamp(20px, 3vw, 30px);
+}
+
+.cf .brief fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+}
+
+.cf .brief legend,
+.cf .brief .lab {
+    display: block;
+    margin-bottom: 10px;
+    padding: 0;
+
+    font: 500 0.72rem/1.4 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.cf .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cf .chips input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cf .chips label {
+    padding: 8px 14px;
+
+    border: 1px solid var(--line);
+    border-radius: 999px;
+
+    font: 500 0.82rem/1.2 var(--sans);
+    color: var(--fg);
+    cursor: pointer;
+
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.cf .chips label:hover {
+    border-color: var(--fg);
+    transform: translateY(-1px);
+}
+
+.cf .chips input:checked + label {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+}
+
+.cf .chips input:focus-visible + label {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.cf .brief input[type="text"],
+.cf .brief textarea {
+    width: 100%;
+    padding: 12px 14px;
+
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    outline: 0;
+    background: color-mix(in srgb, var(--fg) 3%, transparent);
+    color: var(--fg);
+    font: 400 0.95rem/1.5 var(--sans);
+
+    transition: border-color 0.2s ease;
+}
+
+.cf .brief textarea {
+    min-height: 92px;
+    resize: vertical;
+}
+
+.cf .brief input[type="text"]:focus,
+.cf .brief textarea:focus {
+    border-color: var(--accent);
+}
+
+.cf .letter {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+}
+
+.cf .letter-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--fg) 4%, var(--bg2));
+
+    font: 400 0.78rem/1.9 var(--mono);
+    color: var(--muted);
+}
+
+.cf .letter-head b {
+    color: var(--fg);
+    font-weight: 500;
+}
+
+.cf .letter-body {
+    margin: 0;
+    padding: 20px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+
+    font: 400 0.92rem/1.75 var(--sans);
+    color: var(--fg);
+}
+
+.cf .letter-body .ph {
+    color: var(--accent);
+}
+
+.cf .letter-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 20px 18px;
+    border-top: 1px solid var(--line);
+}
+
+.cf .mailto {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 12px 18px;
+
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--on-accent);
+
+    font: 600 0.88rem/1 var(--sans);
+    text-decoration: none;
+
+    transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cf .mailto:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--accent) 32%, transparent);
+}
+
+.cf .collab-foot {
+    margin: 18px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.cf .collab-foot a {
+    color: var(--fg);
+    text-underline-offset: 4px;
+}
+
+.cf .collab-foot a:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 900px) {
+    .cf .collab {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* footer link spacing for the new item */
+.footer-links {
+    flex-wrap: wrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ink-deco,
+    .pal-box {
+        animation: none;
+    }
+
+    .bg-glow {
+        transition: none;
+    }
+}

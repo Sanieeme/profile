@@ -1,0 +1,412 @@
+/* =========================================================
+   THEME  ·  light mode + extra creative touches
+   Loaded last. Dark (black & gold) stays the default tokens in
+   style.css; [data-theme="light"] swaps them for warm paper & ink.
+========================================================= */
+
+:root {
+    color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --color-black: #f5f0e4;          /* page paper          */
+    --color-black-soft: #efe8d6;
+    --color-surface: #ffffff;
+    --color-surface-light: #fbf8f0;
+    --color-surface-hover: #f1ead9;
+
+    --color-gold: #8a5d00;           /* deepened so text passes contrast on paper */
+    --color-gold-light: #a06c05;
+    --color-gold-dark: #6a4600;
+
+    --color-white: #17130a;          /* "white" tokens are used for headings */
+    --color-text: #231d10;
+    --color-text-secondary: #4d473a;
+    --color-text-muted: #6b6454;
+
+    --border-subtle: rgba(40, 28, 0, 0.12);
+    --border-gold: rgba(138, 93, 0, 0.3);
+    --border-gold-strong: rgba(138, 93, 0, 0.55);
+
+    --gold-glow: rgba(184, 132, 26, 0.14);
+    --gold-glow-strong: rgba(184, 132, 26, 0.24);
+
+    --shadow-sm: 0 5px 18px rgba(60, 40, 0, 0.1);
+    --shadow-md: 0 14px 34px rgba(60, 40, 0, 0.14);
+    --shadow-lg: 0 24px 60px rgba(60, 40, 0, 0.18);
+    --shadow-gold: 0 14px 40px rgba(138, 93, 0, 0.16);
+}
+
+/* smooth colour changes when the theme flips (skipped for view transitions) */
+body,
+.navbar,
+.footer {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+}
+
+::selection {
+    background: var(--color-gold);
+    color: var(--color-black);
+}
+
+:root[data-theme="light"] ::selection {
+    color: #fff;
+}
+
+/* ---------------------------------------------------------
+   LIGHT-MODE OVERRIDES FOR THINGS THAT WERE HARD-CODED DARK
+--------------------------------------------------------- */
+
+:root[data-theme="light"] .navbar {
+    background: rgba(245, 240, 228, 0.82);
+}
+
+:root[data-theme="light"] .navbar:hover {
+    background: rgba(245, 240, 228, 0.95);
+}
+
+:root[data-theme="light"] .logo:hover {
+    color: #fff;
+}
+
+:root[data-theme="light"] .footer {
+    background: #ece5d2;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-track {
+    background: var(--color-black);
+}
+
+:root[data-theme="light"] .btn-primary {
+    background: linear-gradient(135deg, #b8841a, #8a5d00);
+    border-color: #8a5d00;
+    color: #fff;
+    box-shadow: 0 8px 22px rgba(138, 93, 0, 0.25);
+}
+
+:root[data-theme="light"] .btn-outline {
+    color: #6a4600;
+    border-color: rgba(138, 93, 0, 0.5);
+    background: rgba(138, 93, 0, 0.04);
+}
+
+:root[data-theme="light"] .btn-outline:hover {
+    background: #8a5d00;
+    border-color: #8a5d00;
+    color: #fff;
+}
+
+:root[data-theme="light"] .social-links a {
+    background: rgba(138, 93, 0, 0.05);
+}
+
+:root[data-theme="light"] .social-links a:hover {
+    color: #fff;
+}
+
+/* hero */
+
+:root[data-theme="light"] .hero-grid {
+    background-image:
+        linear-gradient(rgba(60, 40, 0, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(60, 40, 0, 0.06) 1px, transparent 1px);
+}
+
+:root[data-theme="light"] .hero-aurora {
+    background:
+        radial-gradient(520px 420px at 72% 42%, rgba(212, 160, 40, 0.3), transparent 70%),
+        radial-gradient(420px 360px at 88% 85%, rgba(200, 120, 40, 0.18), transparent 70%),
+        radial-gradient(380px 320px at 8% 12%, rgba(212, 160, 40, 0.14), transparent 70%);
+}
+
+:root[data-theme="light"] .glyph {
+    color: rgba(138, 93, 0, 0.16);
+}
+
+:root[data-theme="light"] .hero--split .grad {
+    background: linear-gradient(100deg, #b07a0a 5%, #8a5d00 55%, #c08a14 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+}
+
+:root[data-theme="light"] .stage-glow {
+    background: radial-gradient(circle, rgba(212, 160, 40, 0.4), transparent 68%);
+}
+
+:root[data-theme="light"] .orbit {
+    border-color: rgba(138, 93, 0, 0.3);
+}
+
+:root[data-theme="light"] .orbit--b {
+    border-color: rgba(138, 93, 0, 0.2);
+}
+
+:root[data-theme="light"] .chip {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(138, 93, 0, 0.28);
+    box-shadow:
+        0 6px 16px rgba(60, 40, 0, 0.16),
+        0 0 14px color-mix(in srgb, var(--c) 14%, transparent);
+}
+
+:root[data-theme="light"] .plate {
+    border-color: rgba(138, 93, 0, 0.7);
+    background: radial-gradient(120% 90% at 28% 12%, #fffdf6 0%, #f7f0dc 62%, #ecdfbd 100%);
+    box-shadow:
+        0 24px 50px rgba(60, 40, 0, 0.28),
+        0 0 60px rgba(212, 160, 40, 0.3),
+        inset 0 0 40px rgba(120, 90, 20, 0.1);
+}
+
+:root[data-theme="light"] .scroll-cue i {
+    background: rgba(40, 28, 0, 0.18);
+}
+
+/* case-file sections */
+
+:root[data-theme="light"] .cf {
+    --bg: #f5f0e4;
+    --bg2: #ffffff;
+    --fg: #17130a;
+    --muted: #5f594a;
+    --line: rgba(40, 28, 0, 0.14);
+    --accent: #8a5d00;
+    --on-accent: #ffffff;
+    --good: #1d7a4d;
+    --bad: #b3361f;
+}
+
+:root[data-theme="light"] .progress {
+    background: linear-gradient(90deg, #8a5d00, #c08a14);
+}
+
+/* ---------------------------------------------------------
+   THEME TOGGLE (sits in the nav)
+--------------------------------------------------------- */
+
+.navbar .logo {
+    margin-right: auto;
+}
+
+.theme-toggle {
+    position: relative;
+    flex: none;
+
+    width: 42px;
+    height: 42px;
+    margin-left: clamp(14px, 2vw, 26px);
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid var(--border-gold);
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.06);
+    color: var(--color-gold-light);
+
+    cursor: pointer;
+    overflow: hidden;
+
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+}
+
+.theme-toggle:hover {
+    transform: rotate(18deg);
+    border-color: var(--color-gold);
+    background: rgba(212, 175, 55, 0.14);
+}
+
+.theme-toggle svg {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.theme-toggle .i-sun  { transform: translateY(26px) rotate(-90deg); opacity: 0; }
+.theme-toggle .i-moon { transform: none; opacity: 1; }
+
+:root[data-theme="light"] .theme-toggle .i-sun  { transform: none; opacity: 1; }
+:root[data-theme="light"] .theme-toggle .i-moon { transform: translateY(-26px) rotate(90deg); opacity: 0; }
+
+/* circular reveal when the browser supports view transitions */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+    animation: themeReveal 0.75s ease-in-out both;
+}
+
+@keyframes themeReveal {
+    from { clip-path: circle(0 at var(--tx, 100%) var(--ty, 0)); }
+    to   { clip-path: circle(150% at var(--tx, 100%) var(--ty, 0)); }
+}
+
+@media (max-width: 700px) {
+    .navbar .logo {
+        margin-right: 0;
+    }
+
+    .theme-toggle {
+        position: absolute;
+        top: 12px;
+        right: 15px;
+        margin: 0;
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* ---------------------------------------------------------
+   NAV — current section
+--------------------------------------------------------- */
+
+.navbar ul li a.is-active {
+    color: var(--color-white);
+}
+
+.navbar ul li a.is-active::after {
+    width: 100%;
+}
+
+/* ---------------------------------------------------------
+   HERO — cursor spotlight + rubber stamp
+--------------------------------------------------------- */
+
+.hero-spot {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        460px circle at var(--mx, 72%) var(--my, 42%),
+        rgba(212, 175, 55, 0.13),
+        transparent 62%
+    );
+    transition: opacity 0.4s ease;
+}
+
+:root[data-theme="light"] .hero-spot {
+    background: radial-gradient(
+        460px circle at var(--mx, 72%) var(--my, 42%),
+        rgba(212, 150, 30, 0.2),
+        transparent 62%
+    );
+}
+
+.stamp {
+    position: absolute;
+    right: -17%;
+    bottom: 13%;
+    z-index: 6;
+
+    display: grid;
+    gap: 2px;
+    padding: 7px 14px 6px;
+
+    border: 2px solid #b3361f;
+    border-radius: 4px;
+    outline: 1px solid #b3361f;
+    outline-offset: 2px;
+
+    background: rgba(252, 247, 232, 0.94);
+    color: #b3361f;
+
+    font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    line-height: 1.2;
+    white-space: nowrap;
+
+    transform: rotate(-11deg);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+
+    animation: stampIn 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) 2.7s both;
+}
+
+.stamp b {
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.stamp i {
+    font-size: 0.62rem;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+}
+
+@keyframes stampIn {
+    from { opacity: 0; transform: rotate(-11deg) scale(2.2); }
+    60%  { opacity: 1; transform: rotate(-11deg) scale(0.94); }
+    to   { opacity: 1; transform: rotate(-11deg) scale(1); }
+}
+
+@media (max-width: 900px) {
+    .stamp {
+        right: -8%;
+        bottom: 6%;
+        padding: 5px 10px 4px;
+    }
+
+    .stamp b { font-size: 0.7rem; }
+    .stamp i { font-size: 0.55rem; }
+}
+
+/* ---------------------------------------------------------
+   SCROLL REVEAL  (only when JS is running)
+--------------------------------------------------------- */
+
+.reveal-ready [data-reveal] {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+        opacity 0.7s ease var(--rd, 0s),
+        transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--rd, 0s);
+}
+
+.reveal-ready [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+}
+
+/* toolkit chips get a little life */
+
+.cf .kit dd span {
+    transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.cf .kit dd span:hover {
+    transform: translateY(-2px);
+}
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+--------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .js [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .stamp {
+        animation: none;
+    }
+
+    ::view-transition-new(root) {
+        animation: none;
+    }
+
+    .theme-toggle svg,
+    .theme-toggle {
+        transition: none;
+    }
+}

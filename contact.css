@@ -1,0 +1,559 @@
+/* =========================================================
+   CONTACT  ·  a realistic "new message" window
+   The message is delivered to one inbox only (the owner's).
+========================================================= */
+
+.cf .contact-block {
+    padding-block: clamp(48px, 8vw, 96px);
+    border-top: 1px solid var(--line);
+}
+
+.cf .mail {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: start;
+}
+
+/* ---- left column ---- */
+
+.cf .mail-side {
+    display: grid;
+    gap: 22px;
+}
+
+.cf .private-card {
+    display: grid;
+    gap: 10px;
+    padding: 20px 22px;
+
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--accent) 7%, var(--bg2));
+}
+
+.cf .private-card .lock {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    font: 500 0.72rem/1.4 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.cf .private-card p {
+    margin: 0;
+    color: var(--fg);
+    font-size: 0.98rem;
+}
+
+.cf .private-card small {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.cf .mail-facts {
+    display: grid;
+    gap: 0;
+    margin: 0;
+}
+
+.cf .mail-facts div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.cf .mail-facts dt {
+    font: 500 0.7rem/1.6 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.cf .mail-facts dd {
+    margin: 0;
+    font-weight: 500;
+    text-align: right;
+}
+
+.cf .mail-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-weight: 500;
+}
+
+.cf .mail-links a {
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+}
+
+.cf .mail-links a:hover {
+    color: var(--accent);
+}
+
+/* ---- the window ---- */
+
+.cf .compose,
+.cf .sent {
+    position: relative;
+    overflow: hidden;
+
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--bg2);
+
+    box-shadow: 0 30px 60px -34px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="light"] .cf .compose,
+:root[data-theme="light"] .cf .sent {
+    box-shadow: 0 30px 60px -36px rgba(60, 40, 0, 0.35);
+}
+
+.cf .win-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 12px 18px;
+
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--fg) 4%, var(--bg2));
+}
+
+.cf .win-dots {
+    display: flex;
+    gap: 7px;
+}
+
+.cf .win-dots i {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--line);
+}
+
+.cf .win-dots i:nth-child(1) { background: #ec6a5e; }
+.cf .win-dots i:nth-child(2) { background: #f4bf4f; }
+.cf .win-dots i:nth-child(3) { background: #61c554; }
+
+.cf .win-title {
+    flex: 1;
+    font: 500 0.78rem/1 var(--mono);
+    letter-spacing: 0.04em;
+    color: var(--muted);
+}
+
+.cf .draft-state {
+    font: 400 0.7rem/1 var(--mono);
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cf .draft-state.show {
+    opacity: 1;
+}
+
+.cf .compose-body {
+    display: grid;
+}
+
+.cf .row {
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+
+    padding: 4px 18px;
+    border-bottom: 1px solid var(--line);
+}
+
+.cf .row > label,
+.cf .row > .row-k {
+    font: 500 0.72rem/1.4 var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.cf .row input[type="text"],
+.cf .row input[type="email"] {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 0;
+
+    border: 0;
+    outline: 0;
+    background: none;
+    color: var(--fg);
+    font: 400 0.98rem/1.4 var(--sans);
+}
+
+.cf .row:focus-within {
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+.cf .row:focus-within > label {
+    color: var(--accent);
+}
+
+.cf input::placeholder,
+.cf textarea::placeholder {
+    color: color-mix(in srgb, var(--muted) 75%, transparent);
+}
+
+.cf .to-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: start;
+
+    padding: 6px 12px 6px 8px;
+
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 8%, var(--bg2));
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.cf .to-chip i {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--on-accent);
+    font: 700 0.62rem/1 var(--sans);
+    font-style: normal;
+}
+
+.cf .to-chip svg {
+    color: var(--muted);
+}
+
+/* topic chips */
+
+.cf .topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 0;
+    border: 0;
+    margin: 0;
+    min-width: 0;
+}
+
+.cf .topics input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.cf .topics label {
+    padding: 7px 12px;
+
+    border: 1px solid var(--line);
+    border-radius: 999px;
+
+    font: 500 0.78rem/1.2 var(--sans);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--fg);
+
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.cf .topics label:hover {
+    border-color: var(--fg);
+}
+
+.cf .topics input:checked + label {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+}
+
+.cf .topics input:focus-visible + label {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* message */
+
+.cf .msg-wrap {
+    position: relative;
+    padding: 6px 18px 0;
+}
+
+.cf .msg-wrap textarea {
+    display: block;
+    width: 100%;
+    min-height: 190px;
+    padding: 10px 0 34px;
+
+    border: 0;
+    outline: 0;
+    resize: vertical;
+    background: none;
+    color: var(--fg);
+    font: 400 0.98rem/1.7 var(--sans);
+}
+
+.cf .counter {
+    position: absolute;
+    right: 18px;
+    bottom: 8px;
+    font: 400 0.7rem/1 var(--mono);
+    color: var(--muted);
+}
+
+.cf .counter.warn {
+    color: var(--bad);
+}
+
+/* errors */
+
+.cf .err {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 0 0 10px;
+    font: 400 0.78rem/1.4 var(--mono);
+    color: var(--bad);
+}
+
+.cf .err:empty {
+    display: none;
+}
+
+.cf .row.invalid {
+    border-bottom-color: var(--bad);
+}
+
+.cf .row.invalid > label {
+    color: var(--bad);
+}
+
+/* footer of the window */
+
+.cf .win-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px 20px;
+
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--line);
+}
+
+.cf .win-note {
+    flex: 1 1 220px;
+    margin: 0;
+    font: 400 0.72rem/1.5 var(--mono);
+    color: var(--muted);
+}
+
+.cf .send {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 13px 22px;
+
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--on-accent);
+
+    font: 600 0.9rem/1 var(--sans);
+    cursor: pointer;
+
+    transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cf .send:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.cf .send:disabled {
+    cursor: progress;
+    opacity: 0.85;
+}
+
+.cf .send svg {
+    transition: transform 0.35s ease;
+}
+
+.cf .send:hover:not(:disabled) svg {
+    transform: translate(3px, -3px);
+}
+
+.cf .send .spin {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid color-mix(in srgb, var(--on-accent) 35%, transparent);
+    border-top-color: var(--on-accent);
+    border-radius: 50%;
+    animation: spinBtn 0.7s linear infinite;
+}
+
+.cf .compose.is-sending .send .spin { display: block; }
+.cf .compose.is-sending .send svg   { display: none; }
+
+@keyframes spinBtn {
+    to { transform: rotate(360deg); }
+}
+
+/* sending progress line */
+
+.cf .sendline {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 3px;
+    width: 0;
+    background: var(--accent);
+    transition: width 0.4s ease;
+}
+
+.cf .compose.is-sending .sendline {
+    width: 78%;
+    transition: width 6s cubic-bezier(0.1, 0.7, 0.2, 1);
+}
+
+.cf .form-error {
+    margin: 0;
+    padding: 12px 18px;
+    border-top: 1px solid var(--bad);
+    background: color-mix(in srgb, var(--bad) 9%, var(--bg2));
+    font-size: 0.88rem;
+    color: var(--fg);
+}
+
+.cf .form-error[hidden] {
+    display: none;
+}
+
+.cf .form-error a {
+    color: var(--bad);
+    font-weight: 600;
+}
+
+.cf .hp {
+    position: absolute !important;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* ---- success ---- */
+
+.cf .sent {
+    display: grid;
+    justify-items: start;
+    gap: 14px;
+    padding: clamp(28px, 4vw, 44px);
+}
+
+.cf .sent[hidden] {
+    display: none;
+}
+
+.cf .plane {
+    width: 64px;
+    height: 64px;
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--good) 14%, transparent);
+    color: var(--good);
+}
+
+.cf .plane svg {
+    animation: flyIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes flyIn {
+    from { transform: translate(-60px, 50px) rotate(-12deg) scale(0.6); opacity: 0; }
+    to   { transform: none; opacity: 1; }
+}
+
+.cf .sent h3 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    line-height: 1.05;
+}
+
+.cf .sent p {
+    margin: 0;
+    color: var(--muted);
+    max-width: 46ch;
+}
+
+.cf .sent-receipt {
+    width: 100%;
+    margin: 6px 0 4px;
+    padding: 14px 16px;
+
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+
+    font: 400 0.8rem/1.9 var(--mono);
+    color: var(--muted);
+}
+
+.cf .sent-receipt b {
+    color: var(--fg);
+    font-weight: 500;
+}
+
+@media (max-width: 960px) {
+    .cf .mail {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .cf .row {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding-top: 10px;
+    }
+
+    .cf .row input[type="text"],
+    .cf .row input[type="email"] {
+        padding-top: 6px;
+    }
+
+    .cf .send {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cf .plane svg,
+    .cf .send .spin {
+        animation: none;
+    }
+
+    .cf .compose.is-sending .sendline {
+        transition: none;
+    }
+}

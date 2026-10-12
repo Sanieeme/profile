@@ -17,6 +17,21 @@
     <meta name="theme-color"
           content="#050505">
 
+    <meta name="color-scheme"
+          content="dark light">
+
+    <!-- Apply the saved (or system) theme before first paint -->
+    <script>
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem("theme"); } catch (e) {}
+            if (t !== "light" && t !== "dark") {
+                t = window.matchMedia && matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+            }
+            document.documentElement.setAttribute("data-theme", t);
+        })();
+    </script>
+
     <title>
         Shonisani Netshidzivhani | Software Engineer
     </title>
@@ -29,17 +44,40 @@
           href="https://fonts.gstatic.com"
           crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap"
           rel="stylesheet">
 
     <!-- Main Stylesheet -->
     <link rel="stylesheet"
           href="style.css">
 
+    <!-- Hero redesign (loads after style.css so it can override) -->
+    <link rel="stylesheet"
+          href="hero.css">
+
+    <!-- Case-file sections (work, backend, path, toolkit, notes) -->
+    <link rel="stylesheet"
+          href="sections.css">
+
+    <!-- Contact window, light theme, extras (load last) -->
+    <link rel="stylesheet"
+          href="contact.css">
+
+    <link rel="stylesheet"
+          href="theme.css">
+
+    <link rel="stylesheet"
+          href="extras.css">
+
 </head>
 
 
-<body>
+<body data-mood="home">
+
+    <canvas class="bg-net" id="bgNet" aria-hidden="true"></canvas>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <div class="progress" id="prog" aria-hidden="true"></div>
 
     <!-- =====================================================
          HEADER / NAVIGATION
@@ -57,44 +95,32 @@
             </a>
 
             <ul class="nav-links">
-
-                <li>
-                    <a href="#home">
-                        Home
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#about">
-                        About
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#education">
-                        Education
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#skills">
-                        Skills
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#projects">
-                        Projects
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#contact">
-                        Contact
-                    </a>
-                </li>
-
+                <li><a href="#home">Home</a></li>
+                <li><a href="#work">Work</a></li>
+                <li><a href="#backend">Backend</a></li>
+                <li><a href="#path">Path</a></li>
+                <li><a href="#toolkit">Toolkit</a></li>
+                <li><a href="#notes">Notes</a></li>
+                <li><a href="#collab">Collaborate</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
+
+            <button class="pal-btn"
+                    id="palBtn"
+                    type="button"
+                    aria-label="Open command palette (Ctrl K)">
+                Quick jump <kbd>Ctrl K</kbd>
+            </button>
+
+            <button class="theme-toggle"
+                    id="themeToggle"
+                    type="button"
+                    aria-label="Switch to light mode"
+                    aria-pressed="false">
+                <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+                <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            </button>
+
 
         </nav>
 
@@ -108,904 +134,670 @@
         ================================================== -->
 
         <section id="home"
-                 class="hero"
+                 class="hero hero--split"
                  aria-labelledby="hero-title">
 
-            <div class="hero-content">
-
-                <div class="profile-container">
-
-                    <img src="images/profile.jpg"
-                         alt="Professional portrait of Shonisani Netshidzivhani"
-                         class="profile-img">
-
-                </div>
-
-
-                <p class="hero-greeting">
-                    Hello, I'm
-                </p>
-
-
-                <h1 id="hero-title">
-                    Shonisani Netshidzivhani
-                </h1>
-
-
-                <h2>
-                    Software Engineer
-                    <span class="hero-divider"
-                          aria-hidden="true">
-                        |
-                    </span>
-                    Backend &amp; Data Engineering
-                </h2>
-
-
-                <p class="hero-description">
-                    Backend-focused software engineer passionate about
-                    building reliable APIs, database-driven applications,
-                    scalable systems, and data solutions that solve
-                    real-world problems.
-                </p>
-
-
-                <!-- Social Links -->
-
-                <div class="social-links">
-
-                    <a href="https://www.linkedin.com/in/shonisani-n-b7574a22/"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       aria-label="Visit Shonisani's LinkedIn profile">
-                        LinkedIn
-                    </a>
-
-                    <a href="https://github.com/Sanieeme"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       aria-label="Visit Shonisani's GitHub profile">
-                        GitHub
-                    </a>
-
-                </div>
-
-
-                <!-- Hero Actions -->
-
-                <div class="hero-buttons">
-
-                    <a href="#projects"
-                       class="btn-primary">
-                        View Projects
-                    </a>
-
-                    <a href="#contact"
-                       class="btn-outline">
-                        Contact Me
-                    </a>
-
-                </div>
-
+            <!-- Ambient background -->
+            <div class="hero-bg"
+                 aria-hidden="true">
+                <span class="hero-grid"></span>
+                <span class="hero-aurora"></span>
+                <span class="hero-spot"></span>
+                <span class="glyph g1">&lt;/&gt;</span>
+                <span class="glyph g2">{ }</span>
+                <span class="glyph g3">SELECT *</span>
+                <span class="glyph g4">def api():</span>
+                <span class="glyph g5">01101</span>
+                <span class="glyph g6">=&gt;</span>
             </div>
 
-        </section>
+            <div class="hero-inner">
 
+                <!-- ============ TEXT ============ -->
+                <div class="hero-text">
 
-        <!-- =================================================
-             ABOUT SECTION
-        ================================================== -->
+                    <p class="hero-eyebrow">
+                        <span class="pulse"
+                              aria-hidden="true"></span>
+                        Psychology <b>×</b> Software Engineering
+                    </p>
 
-        <section id="about"
-                 class="section"
-                 aria-labelledby="about-title">
+                    <h1 id="hero-title">
+                        Hi, I'm
+                        <span class="grad">Shonisani</span><br>
+                        Netshidzivhani<span class="dot">.</span>
+                    </h1>
 
-            <div class="section-heading">
-
-                <span class="section-label">
-                    Get to know me
-                </span>
-
-                <h3 id="about-title">
-                    About Me
-                </h3>
-
-            </div>
-
-
-            <div class="about-container">
-
-                <p class="about-intro">
-                    I am a Software Engineering student at WeThinkCode_
-                    with a strong interest in backend development,
-                    data engineering, databases, and scalable software
-                    systems.
-                </p>
-
-
-                <p>
-                    I enjoy understanding how systems work behind the
-                    scenes and turning ideas into practical software.
-                    My projects have given me experience designing
-                    backend logic, building APIs, working with databases,
-                    implementing authentication, and developing
-                    user-focused applications.
-                </p>
-
-
-                <p>
-                    My background in Psychology gives me a different
-                    perspective on software engineering. It has
-                    strengthened my problem-solving, communication,
-                    analytical thinking, and understanding of how people
-                    interact with systems.
-                </p>
-
-
-                <p>
-                    I use this perspective to build software that is
-                    not only functional, but also intuitive, maintainable,
-                    and useful. I am currently strengthening my skills
-                    in Java, Python, SQL, backend development, data
-                    engineering, system design, testing, and modern
-                    software development practices.
-                </p>
-
-
-                <!-- About Highlights -->
-
-                <div class="about-highlights">
-
-                    <div class="highlight">
-
-                        <span class="highlight-icon"
+                    <h2>
+                        Software Engineer
+                        <span class="hero-divider"
                               aria-hidden="true">
-                            🎯
+                            |
                         </span>
+                        Backend &amp; Data Engineering
+                    </h2>
 
-                        <h4>
-                            Focus
-                        </h4>
-
-                        <p>
-                            Backend Development &amp; Data Engineering
-                        </p>
-
-                    </div>
-
-
-                    <div class="highlight">
-
-                        <span class="highlight-icon"
-                              aria-hidden="true">
-                            💻
-                        </span>
-
-                        <h4>
-                            Strengths
-                        </h4>
-
-                        <p>
-                            Python, Java, SQL &amp; Backend Systems
-                        </p>
-
-                    </div>
-
-
-                    <div class="highlight">
-
-                        <span class="highlight-icon"
-                              aria-hidden="true">
-                            🚀
-                        </span>
-
-                        <h4>
-                            Goal
-                        </h4>
-
-                        <p>
-                            Build scalable, reliable and impactful software
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             EDUCATION SECTION
-        ================================================== -->
-
-        <section id="education"
-                 class="section"
-                 aria-labelledby="education-title">
-
-            <div class="section-heading">
-
-                <span class="section-label">
-                    My academic journey
-                </span>
-
-                <h3 id="education-title">
-                    Education
-                </h3>
-
-            </div>
-
-
-            <div class="education-grid">
-
-                <!-- Education 01 -->
-
-                <div class="education-card">
-
-                    <span class="education-number">
-                        01
-                    </span>
-
-                    <h4>
-                        Software Engineering
-                    </h4>
-
-                    <p>
-                        <strong>
-                            WeThinkCode_
-                        </strong>
+                    <p class="hero-quote">
+                        Psychology taught me to ask <em>why</em>.
+                        Code lets me build the answer.
                     </p>
 
-                    <p>
-                        Current Student
+                    <p class="hero-description">
+                        I build database-driven web apps, REST APIs and data
+                        pipelines in Python and Java. My backend training
+                        comes from ALX Africa, and my psychology and
+                        criminology studies up to Honours level taught me to
+                        research before I build.
                     </p>
 
-                    <span class="education-date">
-                        2025 - 2027
-                    </span>
+                    <!-- Hero Actions -->
 
-                </div>
+                    <div class="hero-buttons">
 
+                        <a href="#projects"
+                           class="btn-primary">
+                            View Projects
+                        </a>
 
-                <!-- Education 02 -->
-
-                <div class="education-card">
-
-                    <span class="education-number">
-                        02
-                    </span>
-
-                    <h4>
-                        Software Engineering | Backend
-                    </h4>
-
-                    <p>
-                        <strong>
-                            ALX Africa
-                        </strong>
-                    </p>
-
-                    <p>
-                        Backend Software Engineering
-                    </p>
-
-                    <span class="education-date">
-                        2023 - 2025
-                    </span>
-
-                </div>
-
-
-                <!-- Education 03 -->
-
-                <div class="education-card">
-
-                    <span class="education-number">
-                        03
-                    </span>
-
-                    <h4>
-                        Bachelor of Arts
-                    </h4>
-
-                    <p>
-                        <strong>
-                            University of Limpopo
-                        </strong>
-                    </p>
-
-                    <p>
-                        Criminology and Psychology
-                    </p>
-
-                    <span class="education-date">
-                        2018 - 2021
-                    </span>
-
-                </div>
-
-
-                <!-- Education 04 -->
-
-                <div class="education-card">
-
-                    <span class="education-number">
-                        04
-                    </span>
-
-                    <h4>
-                        Bachelor of Arts Honours
-                    </h4>
-
-                    <p>
-                        <strong>
-                            University of South Africa
-                        </strong>
-                    </p>
-
-                    <p>
-                        Psychology
-                    </p>
-
-                    <span class="education-date">
-                        2024 - 2025
-                    </span>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             SKILLS SECTION
-        ================================================== -->
-
-        <section id="skills"
-                 class="section"
-                 aria-labelledby="skills-title">
-
-            <div class="section-heading">
-
-                <span class="section-label">
-                    What I work with
-                </span>
-
-                <h3 id="skills-title">
-                    Technical Skills
-                </h3>
-
-            </div>
-
-
-            <div class="skills-grid">
-
-                <!-- Programming -->
-
-                <div class="skill">
-
-                    <h4>
-                        Programming Languages
-                    </h4>
-
-                    <div class="skill-tags">
-
-                        <span>Python</span>
-                        <span>Java</span>
-                        <span>JavaScript</span>
-                        <span>C</span>
-                        <span>R</span>
+                        <a href="#contact"
+                           class="btn-outline">
+                            Contact Me
+                        </a>
 
                     </div>
 
-                </div>
+                    <!-- Social Links -->
 
+                    <div class="social-links">
 
-                <!-- Backend -->
-
-                <div class="skill">
-
-                    <h4>
-                        Backend Development
-                    </h4>
-
-                    <div class="skill-tags">
-
-                        <span>Flask</span>
-                        <span>REST APIs</span>
-                        <span>SQLAlchemy</span>
-                        <span>Client-Server Architecture</span>
-                        <span>Authentication</span>
-                        <span>Role-Based Access</span>
-                        <span>JSON</span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Databases -->
-
-                <div class="skill">
-
-                    <h4>
-                        Databases
-                    </h4>
-
-                    <div class="skill-tags">
-
-                        <span>SQLite</span>
-                        <span>MySQL</span>
-                        <span>SQL</span>
-                        <span>NoSQL</span>
-                        <span>Redis</span>
-                        <span>Database Design</span>
-                        <span>Query Optimization</span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Data Engineering -->
-
-                <div class="skill">
-
-                    <h4>
-                        Data Engineering
-                    </h4>
-
-                    <div class="skill-tags">
-
-                        <span>ETL Pipelines</span>
-                        <span>Data Cleaning</span>
-                        <span>Data Transformation</span>
-                        <span>Data Modeling</span>
-                        <span>Data Processing</span>
-                        <span>Pandas</span>
-                        <span>Data Analytics Basics</span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Web -->
-
-                <div class="skill">
-
-                    <h4>
-                        Web Development
-                    </h4>
-
-                    <div class="skill-tags">
-
-                        <span>HTML5</span>
-                        <span>CSS3</span>
-                        <span>JavaScript</span>
-                        <span>Responsive Design</span>
-                        <span>Bootstrap</span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Cloud -->
-
-                <div class="skill">
-
-                    <h4>
-                        Cloud &amp; DevOps
-                    </h4>
-
-                    <div class="skill-tags">
-
-                        <span>AWS Fundamentals</span>
-                        <span>CI/CD</span>
-                        <span>Docker Basics</span>
-                        <span>Git</span>
-                        <span>GitHub</span>
-                        <span>Linux</span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Software Engineering -->
-
-                <div class="skill">
-
-                    <h4>
-                        Software Engineering
-                    </h4>
-
-                    <div class="skill-tags">
-
-                        <span>OOP</span>
-                        <span>Data Structures</span>
-                        <span>Algorithms</span>
-                        <span>System Design</span>
-                        <span>Testing</span>
-                        <span>Debugging</span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Tools -->
-
-                <div class="skill">
-
-                    <h4>
-                        Tools &amp; Platforms
-                    </h4>
-
-                    <div class="skill-tags">
-
-                        <span>VS Code</span>
-                        <span>IntelliJ IDEA</span>
-                        <span>Git</span>
-                        <span>GitHub</span>
-                        <span>Linux CLI</span>
-                        <span>Jupyter</span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =================================================
-             PROJECTS SECTION
-        ================================================== -->
-
-        <section id="projects"
-                 class="section"
-                 aria-labelledby="projects-title">
-
-            <div class="section-heading">
-
-                <span class="section-label">
-                    Things I've built
-                </span>
-
-                <h3 id="projects-title">
-                    Featured Projects
-                </h3>
-
-                <p class="section-description">
-                    A selection of projects demonstrating my experience
-                    with backend development, databases, APIs, software
-                    engineering, and responsive web development.
-                </p>
-
-            </div>
-
-
-            <div class="projects-grid">
-
-                <!-- =================================================
-                     QUIZEERS
-                ================================================== -->
-
-                <article class="project-card featured-project">
-
-                    <div class="project-header">
-
-                        <span class="project-category">
-                            Full-Stack Web Application
-                        </span>
-
-                        <h4>
-                            Quizeers — Quiz Management Platform
-                        </h4>
-
-                    </div>
-
-
-                    <p>
-                        A full-stack quiz management platform built to
-                        provide learners with an interactive quiz
-                        experience while giving administrators tools to
-                        manage quizzes, questions, users, and results.
-                    </p>
-
-
-                    <p>
-                        The application includes secure authentication,
-                        role-based access, quiz creation and editing,
-                        question management, timed quizzes, shuffled
-                        questions, attempt limits, automatic scoring,
-                        progress tracking, and result history.
-                    </p>
-
-
-                    <p>
-                        I also implemented database-backed administration
-                        features including JSON/CSV question imports,
-                        soft-delete and restore functionality, user
-                        management, password management, and persistent
-                        quiz data.
-                    </p>
-
-
-                    <div class="project-tech">
-
-                        <span>Python</span>
-                        <span>Flask</span>
-                        <span>SQLAlchemy</span>
-                        <span>SQLite</span>
-                        <span>HTML5</span>
-                        <span>CSS3</span>
-                        <span>JavaScript</span>
-
-                    </div>
-
-
-                    <!-- Quizeers Actions -->
-
-                    <div class="project-actions">
-
-                        <a href=" https://sanieeme.github.io/profile/"
+                        <a href="https://github.com/Sanieeme"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="btn-primary"
-                           aria-label="Open Quizeers live demo">
-                            View Live Project ↗
+                           aria-label="Visit Shonisani's GitHub profile">
+                            <svg viewBox="0 0 24 24"
+                                 width="18"
+                                 height="18"
+                                 fill="currentColor"
+                                 aria-hidden="true">
+                                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+                            </svg>
+                            GitHub
                         </a>
 
-                        <a href="https://github.com/Sanieeme/quizeers.git"
+                        <a href="https://www.linkedin.com/in/shonisani-n-b7574a22/"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="btn-outline"
-                           aria-label="View Quizeers source code on GitHub">
-                            GitHub ↗
+                           aria-label="Visit Shonisani's LinkedIn profile">
+                            <svg viewBox="0 0 24 24"
+                                 width="18"
+                                 height="18"
+                                 fill="currentColor"
+                                 aria-hidden="true">
+                                <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/>
+                            </svg>
+                            LinkedIn
                         </a>
 
-                    </div>
-
-                </article>
-
-
-                <!-- =================================================
-                     SKILINKR
-                ================================================== -->
-
-                <article class="project-card">
-
-                    <div class="project-header">
-
-                        <span class="project-category">
-                            Team Project
-                        </span>
-
-                        <h4>
-                            SkiLinkr — API Project
-                        </h4>
-
-                    </div>
-
-
-                    <p>
-                        Collaborated in a team environment to develop
-                        a backend-focused application. The project
-                        strengthened my experience with teamwork, API
-                        development, software design, Git collaboration,
-                        communication, and coordinating development
-                        tasks within a shared codebase.
-                    </p>
-
-
-                    <div class="project-tech">
-
-                        <span>Backend</span>
-                        <span>REST API</span>
-                        <span>Python</span>
-                        <span>Git</span>
-                        <span>Team Development</span>
-
-                    </div>
-
-
-                    <a href="https://github.com/Sanieeme/SkiLinkr_v2.git"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="btn-outline"
-                       aria-label="View SkiLinkr project on GitHub">
-                        View Project ↗
-                    </a>
-
-                </article>
-
-
-                <!-- =================================================
-                     PORTFOLIO
-                ================================================== -->
-
-                <article class="project-card">
-
-                    <div class="project-header">
-
-                        <span class="project-category">
-                            Web Development
-                        </span>
-
-                        <h4>
-                            Personal Portfolio
-                        </h4>
-
-                    </div>
-
-
-                    <p>
-                        A responsive personal portfolio website created
-                        to showcase my software engineering journey,
-                        technical skills, education, projects, and
-                        professional interests.
-                    </p>
-
-
-                    <p>
-                        Built with a focus on responsive design,
-                        accessibility, clean HTML structure,
-                        maintainable CSS, and a simple user experience.
-                    </p>
-
-
-                    <div class="project-tech">
-
-                        <span>HTML5</span>
-                        <span>CSS3</span>
-                        <span>JavaScript</span>
-                        <span>Responsive Design</span>
-                        <span>GitHub Pages</span>
-
-                    </div>
-                    <div class="project-actions">
-
-                        
-
-                        <a href="https://sanieeme.github.io/profile/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="btn-primary"
-                        aria-label="View personal portfolio live project">
-                            View Live Project ↗
-                        </a>
-                        <a href="https://github.com/Sanieeme/profile.git"
+                        <a href="cv.pdf"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="btn-outline"
-                           aria-label="Open Quizeers live demo">
-                            View Project ↗
+                           aria-label="Open Shonisani's CV (PDF)">
+                            <svg viewBox="0 0 24 24"
+                                 width="18"
+                                 height="18"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 aria-hidden="true">
+                                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>
+                                <path d="M14 3v5h5M9 13h6M9 17h6"/>
+                            </svg>
+                            CV
                         </a>
+
                     </div>
 
-                </article>
+                </div>
+
+
+                <!-- ============ PORTRAIT + ORBIT ============ -->
+                <div class="hero-visual">
+
+                    <div class="stage"
+                         id="stage">
+
+                        <span class="stage-glow"
+                              aria-hidden="true"></span>
+
+                        <!-- Tech chips are generated by hero.js (edit the RINGS / DRIFT lists there) -->
+                        <div class="orbit orbit--a"
+                             data-ring="a"
+                             aria-hidden="true"></div>
+
+                        <div class="portrait"
+                             id="portrait">
+
+                            <figure class="plate"
+                                    id="plate">
+                                <canvas id="blot"
+                                        width="640"
+                                        height="800"
+                                        role="img"
+                                        aria-label="Portrait of Shonisani Netshidzivhani emerging from a symmetrical inkblot, generated live in the browser"></canvas>
+                                <span class="tag l">Plate I</span>
+                                <span class="tag r">Generated live</span>
+                                <noscript>
+                                    <img src="images/profile-hero.jpg"
+                                         alt="Portrait of Shonisani Netshidzivhani"
+                                         width="800"
+                                         height="1026">
+                                </noscript>
+                            </figure>
+
+                            <span class="stamp"
+                                  aria-hidden="true">
+                                <b>Available</b>
+                                <i>Jan 2027</i>
+                            </span>
+
+                        </div>
+
+                        <div class="orbit orbit--b"
+                             data-ring="b"
+                             aria-hidden="true"></div>
+
+                        <div class="drift"
+                             data-ring="drift"
+                             aria-hidden="true"></div>
+
+                    </div>
+
+                    <p class="plate-caption"
+                       aria-live="off">
+                        What do you see? Most people say
+                        <span id="reading"></span>
+                    </p>
+
+                </div>
 
             </div>
+
+            <a href="#work"
+               class="scroll-cue"
+               aria-label="Scroll to my work">
+                <span>Scroll</span>
+                <i aria-hidden="true"></i>
+            </a>
 
         </section>
 
 
         <!-- =================================================
-             CONTACT SECTION
+             CASE FILE: facts · work · backend · path · toolkit · notes
+             (styles in sections.css, demos in sections.js)
         ================================================== -->
 
-        <section id="contact"
-                 class="section contact-section"
-                 aria-labelledby="contact-title">
+        <div class="cf">
 
-            <div class="section-heading">
+<dl class="facts">
+    <div><dt>Based in</dt><dd>Gauteng, South Africa</dd></div>
+    <div><dt>Citizenship</dt><dd>South African</dd></div>
+    <div><dt>Available</dt><dd>From January 2027</dd></div>
+    <div><dt>Work arrangement</dt><dd>On-site</dd></div>
+  </dl>
 
-                <span class="section-label">
-                    Let's connect
-                </span>
+  <ul class="creds" aria-label="Credentials">
+    <li class="cred hl"><span class="cred-k">Completed 2025</span><b>ALX Africa</b><span class="cred-d">Backend Software Engineering Specialisation</span></li>
+    <li class="cred"><span class="cred-k">Expected Dec 2026</span><b>WeThinkCode_</b><span class="cred-d">Software Engineering</span></li>
+    <li class="cred"><span class="cred-k">2025</span><b>FNB</b><span class="cred-d">Full Stack Development</span></li>
+    <li class="cred"><span class="cred-k">2024 to 2025</span><b>UNISA</b><span class="cred-d">BA Honours in Psychology</span></li>
+  </ul>
 
-                <h3 id="contact-title">
-                    Contact Me
-                </h3>
+  <section id="work">
+    <div class="sec-head">
+      <p class="eyebrow">Selected work</p>
+      <h2>Things I have built, and a few you can poke at</h2>
+      <p class="sub">The two panels below are small sample versions of ideas from the projects. They use made-up data.</p>
+    </div>
 
-                <p class="contact-subtitle">
-                    Have a project, collaboration, internship, or
-                    career opportunity? I'd love to hear from you.
-                </p>
+    <article class="proj">
+      <div class="proj-text">
+        <p class="tech">Python · Flask · SQLAlchemy · SQLite · JavaScript · Docker · GitHub Actions</p>
+        <h3>Quizeers, a full-stack learning platform</h3>
+        <ul>
+          <li>Role-based authentication on a Flask app backed by relational models for users, quizzes, questions and results.</li>
+          <li>Timed quizzes, question shuffling, progress tracking, attempt limits and admin CRUD.</li>
+          <li>JSON and CSV bulk import to load quizzes quickly.</li>
+          <li>Containerised with Docker Compose, with GitHub Actions running builds and tests.</li>
+        </ul>
+        <div class="links">
+          <a href="https://sanieeme.github.io/quizeers/" target="_blank" rel="noopener">Live demo ↗</a>
+          <a href="https://github.com/Sanieeme/quizeers" target="_blank" rel="noopener">Source on GitHub ↗</a>
+        </div>
+      </div>
+      <div>
+        <div class="panel" id="quiz" aria-live="polite"></div>
+        <p class="panel-note">Sample round written for this page. It mimics the timer, shuffle and progress ideas.</p>
+      </div>
+    </article>
 
+    <article class="proj flip">
+      <div class="proj-text">
+        <p class="tech">Python · Pandas · Data processing · ETL</p>
+        <h3>Crypto and weather data pipeline</h3>
+        <ul>
+          <li>Extracts structured datasets and applies cleaning and transformation with Pandas.</li>
+          <li>Groups and processes the data to surface patterns and prepare analytical outputs.</li>
+          <li>Built on ETL principles so the data is ready for downstream analysis.</li>
+        </ul>
+        <div class="links">
+          <a href="https://github.com/Sanieeme/crypto_weather_pipeline" target="_blank" rel="noopener">Source on GitHub ↗</a>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <pre class="pipe-code" id="pipeCode"></pre>
+          <div class="tbl-scroll">
+            <table>
+              <thead><tr><th>coin</th><th>price_usd</th><th>temp_c</th></tr></thead>
+              <tbody id="pipeBody"></tbody>
+            </table>
+          </div>
+          <div class="pipe-foot">
+            <span id="pipeNote"></span>
+            <button class="btn-sm" type="button" id="pipeBtn">Run clean</button>
+          </div>
+        </div>
+        <p class="panel-note">Illustrative sample rows. This is not output from the repository.</p>
+      </div>
+    </article>
+
+    <div class="minis">
+      <article class="mini">
+        <p class="tech">HTML · CSS · Git · GitHub Pages</p>
+        <h3>Personal portfolio site</h3>
+        <ul>
+          <li>Designed and built to showcase projects, skills and education.</li>
+          <li>Version controlled with Git and deployed on GitHub Pages.</li>
+        </ul>
+        <div class="links">
+          <a href="https://sanieeme.github.io/profile/" target="_blank" rel="noopener">Visit site ↗</a>
+          <a href="https://github.com/Sanieeme/profile" target="_blank" rel="noopener">Source ↗</a>
+        </div>
+      </article>
+      <article class="mini">
+        <p class="tech">Team project · Git · Agile</p>
+        <h3>SkiLinkr v2</h3>
+        <ul>
+          <li>Shared codebase built with other developers towards common requirements.</li>
+          <li>Technical problem-solving and coordination, with version control carrying every contribution.</li>
+        </ul>
+        <div class="links">
+          <a href="https://github.com/Sanieeme/SkiLinkr_v2" target="_blank" rel="noopener">Source ↗</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="backend">
+    <div class="sec-head">
+      <p class="eyebrow"><b>ALX Africa</b> · Completed 2025</p>
+      <h2>Backend is where I do my best work</h2>
+      <p class="sub">I studied software engineering at ALX Africa and specialised in backend development. That is the layer users never see and always depend on: the APIs, the databases and the logic between them.</p>
+    </div>
+    <div class="alx">
+      <div>
+        <div class="panel">
+          <div class="trace-top">
+            <div class="seg" role="group" aria-label="Choose a request to trace">
+              <button type="button" class="seg-b" data-k="GET /quizzes" aria-pressed="true">GET /quizzes</button>
+              <button type="button" class="seg-b" data-k="POST /results" aria-pressed="false">POST /results</button>
+              <button type="button" class="seg-b" data-k="GET /quizzes/99" aria-pressed="false">GET /quizzes/99</button>
             </div>
+            <button class="btn-sm" type="button" id="replay">Replay</button>
+          </div>
+          <ol class="hops" id="hops">
+            <li><b>Client</b><span>sends</span></li>
+            <li><b>Route</b><span>matches</span></li>
+            <li><b>Validate</b><span>checks</span></li>
+            <li><b>Query</b><span>SQL</span></li>
+            <li><b>Respond</b><span>replies</span></li>
+          </ol>
+          <pre class="trace-log" id="traceLog" aria-live="polite"></pre>
+          <div class="io">
+            <div><p class="eyebrow">Query</p><pre id="sqlOut"></pre></div>
+            <div><p class="eyebrow">Response<span class="pill" id="statusPill"></span></p><pre id="resOut"></pre></div>
+          </div>
+        </div>
+        <p class="panel-note">Request tracer with sample data. It shows how I think about a request, and is not taken from a live API.</p>
+      </div>
+      <aside class="alx-side">
+        <p class="eyebrow"><b>ALX Africa</b> · Software Engineering</p>
+        <h3>Backend Software Engineering Specialisation</h3>
+        <ul>
+          <li>Python</li><li>Backend Development</li><li>REST APIs</li><li>SQL</li><li>Databases</li><li>Linux</li><li>Git/GitHub</li><li>JavaScript</li><li>C</li><li>Software Engineering</li>
+        </ul>
+        <p class="after">Completed in 2025. I put it to work in Quizeers, with Flask, SQLAlchemy and role-based authentication, and in a Pandas data pipeline.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section id="path">
+    <div class="sec-head">
+      <p class="eyebrow">Path</p>
+      <h2>Extract, transform, load</h2>
+      <p class="sub">My route into software, told the way I would describe a pipeline.</p>
+    </div>
+    <div class="stages">
+      <div class="pstage">
+        <p class="eyebrow"><b>Extract</b> · 2018 to 2025</p>
+        <h3>Psychology and criminology</h3>
+        <ol>
+          <li><span class="when">2018 – 2021</span><span class="what">University of Limpopo</span><span class="more">BA in Psychology and Criminology.</span></li>
+          <li><span class="when">2023</span><span class="what">Momentum Metropolitan</span><span class="more">Financial Education certification.</span></li>
+          <li><span class="when">2024 – 2025</span><span class="what">UNISA</span><span class="more">BA Honours in Psychology. Research methodology, quantitative and qualitative research, data interpretation and research reporting.</span></li>
+        </ol>
+      </div>
+      <div class="pstage">
+        <p class="eyebrow"><b>Transform</b> · 2025 to 2026</p>
+        <h3>Software engineering</h3>
+        <ol>
+          <li><span class="when">Completed 2025</span><span class="what">ALX Africa</span><span class="more">Backend Software Engineering Specialisation covering Python, REST APIs, SQL, Linux, Git, JavaScript and C.</span></li>
+          <li><span class="when">2025</span><span class="what">FNB</span><span class="more">Full Stack Development certification.</span></li>
+          <li><span class="when">2025 – Dec 2026</span><span class="what">WeThinkCode_</span><span class="more">Software Engineering. Python, Java, OOP, testing, relational databases, system design and agile team development.</span></li>
+        </ol>
+      </div>
+      <div class="pstage">
+        <p class="eyebrow"><b>Load</b> · 2027 onward</p>
+        <h3>Graduate roles</h3>
+        <ol>
+          <li><span class="when">From January 2027</span><span class="what">Ready for a first engineering role</span><span class="more">Interested in technology innovation, digital solutions and collaborative projects in a professional team. Willing to work on-site.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="toolkit">
+    <div class="sec-head">
+      <p class="eyebrow">Toolkit</p>
+      <h2>What I work with, and how I work</h2>
+    </div>
+    <div class="kit">
+      <dl>
+        <div><dt>Languages</dt><dd><span>Python</span><span>Java</span><span>JavaScript</span><span>C</span><span>Object-Oriented Programming</span></dd></div>
+        <div><dt>Backend and web</dt><dd><span>REST APIs</span><span>Backend Development</span><span>Flask</span><span>FastAPI</span><span>Javalin</span><span>HTML</span><span>CSS</span><span>Bootstrap</span><span>JSON</span><span>HTTP/HTTPS</span></dd></div>
+        <div><dt>Data</dt><dd><span>SQL</span><span>SQLite</span><span>PostgreSQL</span><span>MySQL</span><span>SQLAlchemy</span><span>Pandas</span><span>ETL</span><span>Data Cleaning</span><span>Data Transformation</span><span>Data Analysis</span></dd></div>
+        <div><dt>Engineering</dt><dd><span>Git</span><span>GitHub</span><span>Linux</span><span>Maven</span><span>Docker</span><span>GitHub Actions</span><span>CI/CD</span><span>Unit Testing</span><span>Integration Testing</span><span>Debugging</span><span>Documentation</span></dd></div>
+        <div><dt>Office</dt><dd><span>Word</span><span>Excel</span><span>PowerPoint</span><span>Outlook</span></dd></div>
+      </dl>
+      <div class="human">
+        <p class="eyebrow">The people side</p>
+        <p class="words"><span>Analytical thinking,</span> <span>problem-solving,</span> <span>research,</span> <span>attention to detail,</span> <span>communication,</span> <span>teamwork,</span> <span>adaptability,</span> <span>organisation,</span> <span>time management,</span> <span>continuous learning.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="notes">
+    <div class="sec-head">
+      <p class="eyebrow">Beyond the code</p>
+      <h2>Case notes</h2>
+      <p class="sub">Mentoring, community work and research that shaped how I work with people.</p>
+    </div>
+    <div class="notes">
+      <article class="note">
+        <p class="eyebrow"><b>Mentor</b> · Limpopo · 2020 to now</p>
+        <h3>Bono Foundation</h3>
+        <p>I mentor Grade 12 learners in academic planning, goal setting and personal development. I give one-to-one support through active listening and structured guidance, and I work with learners from many different backgrounds.</p>
+      </article>
+      <article class="note">
+        <p class="eyebrow"><b>Volunteer</b> · Gauteng · 2025 to Aug 2026</p>
+        <h3>WeThinkCode_ Student Wellness Committee</h3>
+        <p>I checked in with fellow students, and helped organise recreational activities that got people away from intensive coding for a while. The aim was a supportive place to learn.</p>
+      </article>
+      <article class="note">
+        <p class="eyebrow"><b>Research</b> · Psychology</p>
+        <h3>Evidence before conclusions</h3>
+        <p>I ran qualitative and quantitative research across multiple sources, analysed patterns, interpreted findings and wrote structured reports. It sharpened my attention to detail and my written communication.</p>
+      </article>
+    </div>
+  </section>
+
+  
+        </div>
 
 
-            <div class="contact-wrapper">
+        <!-- =================================================
+             CONTACT — a realistic "new message" window.
+             Delivered to ONE inbox only (the address in the form action).
+        ================================================== -->
 
-                <form action="https://formsubmit.co/shoneesani@gmail.com"
-                      method="POST"
-                      class="contact-card">
+        <div class="cf">
 
-                    <!-- FormSubmit Configuration -->
+            <section id="collab"
+                     class="collab-block"
+                     aria-labelledby="collab-title">
 
-                    <input type="hidden"
-                           name="_captcha"
-                           value="false">
+                <div class="sec-head">
+                    <p class="eyebrow"><b>Collaborate</b> · open invitation</p>
+                    <h2 id="collab-title">Want to build something <em>together</em>?</h2>
+                    <p class="sub">If you have an idea, a project that needs a backend or a data pipeline, or a team that could use another pair of hands, send me an email. Build your first message below and it opens ready to send in your email app.</p>
+                </div>
 
-                    <input type="hidden"
-                           name="_subject"
-                           value="New Portfolio Message">
+                <div class="collab">
 
-                    <input type="hidden"
-                           name="_next"
-                           value="thankyou.html">
+                    <div class="brief"
+                         id="collabBrief"
+                         role="group"
+                         aria-label="Build a collaboration email"
+                         data-to="shoneesani@gmail.com">
 
+                        <fieldset>
+                            <legend>I'd like to collaborate on…</legend>
+                            <div class="chips">
+                                <input type="checkbox" name="cb-topic" id="cbt1" data-phrase="backend and APIs" value="Backend & APIs"><label for="cbt1">Backend &amp; APIs</label>
+                                <input type="checkbox" name="cb-topic" id="cbt2" data-phrase="data pipelines" value="Data pipelines"><label for="cbt2">Data pipelines</label>
+                                <input type="checkbox" name="cb-topic" id="cbt3" data-phrase="education tech" value="Education tech"><label for="cbt3">Education tech</label>
+                                <input type="checkbox" name="cb-topic" id="cbt4" data-phrase="open source projects" value="Open source"><label for="cbt4">Open source</label>
+                                <input type="checkbox" name="cb-topic" id="cbt5" data-phrase="research-informed software" value="Research and software"><label for="cbt5">Research &times; software</label>
+                                <input type="checkbox" name="cb-topic" id="cbt6" data-phrase="something else" value="Something else"><label for="cbt6">Something else</label>
+                            </div>
+                        </fieldset>
 
-                    <!-- Name -->
+                        <fieldset>
+                            <legend>How big is it?</legend>
+                            <div class="chips">
+                                <input type="radio" name="cb-format" id="cbf1" value="A quick task"><label for="cbf1">A quick task</label>
+                                <input type="radio" name="cb-format" id="cbf2" value="A short project"><label for="cbf2">A short project</label>
+                                <input type="radio" name="cb-format" id="cbf3" value="Something ongoing"><label for="cbf3">Something ongoing</label>
+                            </div>
+                        </fieldset>
 
-                    <div class="form-group">
+                        <div>
+                            <label class="lab" for="cbName">Your name</label>
+                            <input type="text" id="cbName" autocomplete="name" placeholder="So I know who to reply to" maxlength="80">
+                        </div>
 
-                        <label for="name">
-                            Full Name
-                        </label>
-
-                        <input type="text"
-                               id="name"
-                               name="name"
-                               placeholder="Your full name"
-                               autocomplete="name"
-                               required>
+                        <div>
+                            <label class="lab" for="cbIdea">The idea, in a sentence or two</label>
+                            <textarea id="cbIdea" maxlength="600" placeholder="What are you hoping to build?"></textarea>
+                        </div>
 
                     </div>
 
+                    <div class="letter">
 
-                    <!-- Email -->
+                        <div class="letter-head">
+                            To: <b>Shonisani Netshidzivhani</b><br>
+                            Subject: <b id="letterSubject"></b>
+                        </div>
 
-                    <div class="form-group">
+                        <p class="letter-body" id="letterBody" aria-live="polite"></p>
 
-                        <label for="email">
-                            Email Address
-                        </label>
-
-                        <input type="email"
-                               id="email"
-                               name="email"
-                               placeholder="your@email.com"
-                               autocomplete="email"
-                               required>
-
-                    </div>
-
-
-                    <!-- Message -->
-
-                    <div class="form-group">
-
-                        <label for="message">
-                            Message
-                        </label>
-
-                        <textarea id="message"
-                                  name="message"
-                                  rows="6"
-                                  placeholder="Tell me about your project or opportunity..."
-                                  required></textarea>
+                        <div class="letter-foot">
+                            <a class="mailto" id="mailtoBtn" href="mailto:shoneesani@gmail.com?subject=Collaboration%20idea">
+                                Open in my email app
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                            </a>
+                            <button type="button" class="btn-sm" id="copyDraft">Copy draft</button>
+                            <button type="button" class="btn-sm" id="copyAddr">Copy email address</button>
+                        </div>
 
                     </div>
 
+                </div>
 
-                    <button type="submit"
-                            class="btn-primary">
-                        Send Message 🚀
-                    </button>
+                <p class="collab-foot">Prefer a form? <a href="#contact">Use the message window below</a>. It goes only to me as well.</p>
 
-                </form>
+            </section>
 
-            </div>
+        </div>
 
-        </section>
+        <div class="cf">
+
+            <section id="contact"
+                     class="contact-block"
+                     aria-labelledby="contact-title">
+
+                <div class="sec-head">
+                    <p class="eyebrow"><b>Contact</b> · private line</p>
+                    <h2 id="contact-title">Hiring for graduate roles? Let's <em>talk</em>.</h2>
+                    <p class="sub">I am available from January 2027, subject to confirmation of programme requirements, and willing to work on-site in Gauteng.</p>
+                </div>
+
+                <div class="mail">
+
+                    <aside class="mail-side">
+
+                        <div class="private-card">
+                            <span class="lock">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                                Private by design
+                            </span>
+                            <p>Your message goes to one inbox: mine. It is never posted on this site and nobody else receives a copy.</p>
+                            <small>It is relayed by FormSubmit, a mail-forwarding service. I reply from my own email, to the address you give.</small>
+                        </div>
+
+                        <dl class="mail-facts">
+                            <div><dt>Available</dt><dd>From January 2027</dd></div>
+                            <div><dt>Based in</dt><dd>Gauteng, South Africa</dd></div>
+                            <div><dt>Work</dt><dd>On-site</dd></div>
+                            <div><dt>Local time</dt><dd id="localTime">Johannesburg</dd></div>
+                        </dl>
+
+                        <div class="mail-links">
+                            <a href="https://github.com/Sanieeme" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                            <a href="https://www.linkedin.com/in/shonisani-n-b7574a22/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+                            <a href="cv.pdf" target="_blank" rel="noopener noreferrer">CV ↗</a>
+                        </div>
+
+                    </aside>
+
+                    <div>
+
+                        <form class="compose"
+                              id="contactForm"
+                              action="https://formsubmit.co/shoneesani@gmail.com"
+                              method="POST"
+                              novalidate>
+
+                            <span class="sendline" aria-hidden="true"></span>
+
+                            <div class="win-bar">
+                                <span class="win-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                                <span class="win-title">New message</span>
+                                <span class="draft-state" id="draftState" aria-live="polite"></span>
+                            </div>
+
+                            <!-- Settings used when JavaScript is off (normal form post) -->
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_template" value="table">
+                            <input type="hidden" name="_subject" value="New portfolio message">
+                            <input type="hidden" name="_next" value="thankyou.html">
+
+                            <!-- spam trap: humans never see or fill this -->
+                            <div class="hp" aria-hidden="true">
+                                <label>Leave this empty <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label>
+                            </div>
+
+                            <div class="compose-body">
+
+                                <div class="row">
+                                    <span class="row-k">To</span>
+                                    <span class="to-chip">
+                                        <i aria-hidden="true">S</i>
+                                        Shonisani Netshidzivhani
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Private, one recipient only" role="img"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                                    </span>
+                                </div>
+
+                                <div class="row">
+                                    <label for="c-name">From</label>
+                                    <input type="text" id="c-name" name="name" placeholder="Your name" autocomplete="name" required maxlength="80">
+                                    <p class="err" id="err-name" role="alert"></p>
+                                </div>
+
+                                <div class="row">
+                                    <label for="c-email">Reply to</label>
+                                    <input type="email" id="c-email" name="email" placeholder="you@company.com" autocomplete="email" required maxlength="120">
+                                    <p class="err" id="err-email" role="alert"></p>
+                                </div>
+
+                                <div class="row">
+                                    <span class="row-k" id="topic-k">About</span>
+                                    <fieldset class="topics" aria-labelledby="topic-k">
+                                        <input type="radio" name="topic" id="t1" value="Graduate role" checked><label for="t1">Graduate role</label>
+                                        <input type="radio" name="topic" id="t2" value="Internship"><label for="t2">Internship</label>
+                                        <input type="radio" name="topic" id="t3" value="Collaboration"><label for="t3">Collaboration</label>
+                                        <input type="radio" name="topic" id="t4" value="Just saying hi"><label for="t4">Just saying hi</label>
+                                    </fieldset>
+                                </div>
+
+                                <div class="msg-wrap">
+                                    <label class="sr-only" for="c-message" style="position:absolute;left:-9999px">Message</label>
+                                    <textarea id="c-message" name="message" required maxlength="2000" placeholder="Write your message…"></textarea>
+                                    <span class="counter" id="counter" aria-hidden="true">0 / 2000</span>
+                                    <p class="err" id="err-message" role="alert"></p>
+                                </div>
+
+                            </div>
+
+                            <p class="form-error" id="formError" role="alert" hidden></p>
+
+                            <div class="win-foot">
+                                <p class="win-note">Delivered to one inbox only. Nothing is posted on this site.</p>
+                                <button type="submit" class="send" id="sendBtn">
+                                    <span class="spin" aria-hidden="true"></span>
+                                    Send message
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+                                </button>
+                            </div>
+
+                        </form>
+
+                        <div class="sent" id="sentPanel" hidden>
+                            <span class="plane" aria-hidden="true">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+                            </span>
+                            <h3 id="sentTitle" tabindex="-1">Message <em>sent</em>.</h3>
+                            <p>Thank you. It went straight to my inbox, and I'll reply to the email address you gave.</p>
+                            <div class="sent-receipt">
+                                To: <b>Shonisani Netshidzivhani</b><br>
+                                About: <b id="rcTopic"></b><br>
+                                Reply to: <b id="rcFrom"></b><br>
+                                Sent: <b id="rcTime"></b>
+                            </div>
+                            <button type="button" class="btn-sm" id="sendAnother">Write another message</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
 
     </main>
 
@@ -1047,6 +839,8 @@
                     LinkedIn
                 </a>
 
+                <a href="#collab">Collaborate</a>
+
                 <a href="#contact">
                     Contact
                 </a>
@@ -1060,7 +854,6 @@
 
             <p>
                 &copy; 2026 Shonisani Netshidzivhani.
-                Built with HTML &amp; CSS.
             </p>
 
         </div>
@@ -1072,7 +865,20 @@
          JAVASCRIPT
     ====================================================== -->
 
-    <script src="script.js"></script>
+
+    <!-- Command palette (Ctrl/Cmd + K, or press "/") -->
+    <div class="palette" id="palette" hidden role="dialog" aria-modal="true" aria-label="Quick jump">
+        <div class="pal-box">
+            <input id="palInput" type="text" placeholder="Where to? Try “work”, “email” or “theme”" autocomplete="off" aria-label="Search commands" aria-controls="palList">
+            <ul class="pal-list" id="palList" role="listbox"></ul>
+            <p class="pal-hint">↑ ↓ to move · Enter to go · Esc to close</p>
+        </div>
+    </div>
+
+    <script src="hero.js"></script>
+    <script src="sections.js"></script>
+    <script src="site.js"></script>
+    <script src="extras.js"></script>
 
 </body>
 
