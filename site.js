@@ -286,6 +286,7 @@
 
     var rules = {
         name: function (v) { return v.trim().length >= 2 ? "" : "Please tell me your name."; },
+        email: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "" : "That email doesn't look right. I need it to reply."; },
         message: function (v) {
             var n = v.trim().length;
             if (n < 10) return "A few more words, please (at least 10 characters).";
@@ -304,7 +305,7 @@
         return !msg;
     }
 
-    ["name", "message"].forEach(function (n) {
+    ["name", "email", "message"].forEach(function (n) {
         f[n].addEventListener("blur", function () { if (f[n].value) check(n); });
         f[n].addEventListener("input", function () {
             if (f[n].getAttribute("aria-invalid") === "true") check(n);
@@ -324,7 +325,7 @@
     function saveDraft() {
         try {
             localStorage.setItem(DRAFT_KEY, JSON.stringify({
-                name: f.name.value, topic: topic(), message: f.message.value
+                name: f.name.value, email: f.email.value, topic: topic(), message: f.message.value
             }));
             draftState.textContent = "Draft saved";
             draftState.classList.add("show");
@@ -346,6 +347,7 @@
         var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
         if (d) {
             f.name.value = d.name || "";
+            f.email.value = d.email || "";
             f.message.value = d.message || "";
             var r = form.querySelector('input[name="topic"][value="' + d.topic + '"]');
             if (r) r.checked = true;
@@ -384,6 +386,7 @@
         var when = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
         $("#rcTopic").textContent = topic();
         $("#rcTime").textContent = "today, " + when;
+        $("#rcFrom").textContent = f.email.value.trim();
         try { sessionStorage.setItem("sn_sent_at", String(Date.now())); } catch (e) { /* ignore */ }
         clearDraft();
         form.hidden = true;
@@ -395,7 +398,7 @@
         e.preventDefault();
         formError.hidden = true;
 
-        var ok = ["name", "message"].map(check).every(Boolean);
+        var ok = ["name", "email", "message"].map(check).every(Boolean);
         if (!ok) {
             var bad = form.querySelector('[aria-invalid="true"]');
             if (bad) bad.focus();
@@ -420,6 +423,7 @@
 
         var payload = {
             name: f.name.value.trim(),
+            email: f.email.value.trim(),
             topic: topic(),
             message: f.message.value.trim(),
             _subject: "Portfolio · " + topic() + " · from " + f.name.value.trim(),
