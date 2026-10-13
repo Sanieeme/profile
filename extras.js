@@ -609,7 +609,7 @@
         { t: "Send me a collaboration idea", k: "email", f: function () { go("collab"); } },
         { t: "Copy my email address", k: "action", f: function () { if (navigator.clipboard && addr) navigator.clipboard.writeText(addr); } },
         { t: "Open GitHub", k: "link", f: function () { window.open("https://github.com/Sanieeme", "_blank", "noopener"); } },
-        { t: "Open LinkedIn", k: "link", f: function () { window.open("https://www.linkedin.com/in/shonisani-n-b7574a22/", "_blank", "noopener"); } },
+        { t: "Open LinkedIn", k: "link", f: function () { window.open("https://www.linkedin.com/in/shonisani-n-b7574a22a/", "_blank", "noopener"); } },
         { t: "Open my CV (PDF)", k: "link", f: function () { window.open("cv.pdf", "_blank", "noopener"); } }
     ];
 
