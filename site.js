@@ -48,6 +48,9 @@
     }
 
     window.snSend = function (form, payload) {
+        // FormSubmit: use the classic form post (no AJAX). It is the most reliable route and is
+        // what FormSubmit documents; the visitor lands on thankyou.html after sending.
+        if (!useW3) return Promise.resolve({ status: "fallback" });
         var url = useW3 ? "https://api.web3forms.com/submit"
                         : form.getAttribute("action").replace("formsubmit.co/", "formsubmit.co/ajax/");
         var body = useW3 ? w3Payload(payload) : payload;
@@ -126,6 +129,7 @@
             f.appendChild(i);
         });
         document.body.appendChild(f);
+        try { localStorage.removeItem("sn_contact_draft"); localStorage.removeItem("sn_collab_draft"); } catch (e) { /* ignore */ }
         f.submit();
 
         // if the page is still here a few seconds later, the browser blocked the post
