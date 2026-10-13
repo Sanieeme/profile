@@ -79,6 +79,17 @@
     window.snNote = function (el, message) {
         if (!el) return;
         var needs = /activat/i.test(message || "");
+        var debug = /[?&]debug\b/.test(window.location.search);
+
+        if (debug) {
+            // add ?debug=1 to the site address to see exactly what the mail service replied
+            el.hidden = false;
+            el.textContent = "Debug · sent via " + (useW3 ? "Web3Forms" : "FormSubmit") +
+                " · service reply: " + (message ? "\u201c" + message + "\u201d" : "(no message)") +
+                (needs ? " · it needs activating: check your inbox and Spam for the FormSubmit email." : "");
+            return;
+        }
+
         el.hidden = !needs;
         if (needs) {
             el.textContent = "Note for the site owner: FormSubmit says this form still needs a one-time activation. " +
