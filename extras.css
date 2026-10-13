@@ -267,6 +267,10 @@ body[data-mood="contact"]  .bg-glow { --gx: 72%; --gy: 60%; --gc: rgba(212, 175,
     border-top: 1px solid var(--line);
 }
 
+.cf .collab[hidden] {
+    display: none;
+}
+
 .cf .collab {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -282,10 +286,57 @@ body[data-mood="contact"]  .bg-glow { --gx: 72%; --gy: 60%; --gc: rgba(212, 175,
 }
 
 .cf .brief {
+    position: relative;
+    overflow: hidden;
     display: grid;
     gap: 22px;
     align-content: start;
     padding: clamp(20px, 3vw, 30px);
+}
+
+.cf .field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.cf .field {
+    min-width: 0;
+}
+
+.cf .field .err {
+    padding: 6px 0 0;
+}
+
+.cf .brief .form-error {
+    margin: 0 calc(-1 * clamp(20px, 3vw, 30px));
+}
+
+.cf .brief-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px 20px;
+}
+
+.cf .brief-foot .win-note {
+    flex: 1 1 200px;
+}
+
+.cf .brief.is-sending .send .spin { display: block; }
+.cf .brief.is-sending .send svg   { display: none; }
+.cf .brief.is-sending .sendline   { width: 78%; transition: width 6s cubic-bezier(0.1, 0.7, 0.2, 1); }
+
+.cf .collab-block .sent {
+    max-width: 640px;
+}
+
+.cf .letter-head .live {
+    color: var(--accent);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 .cf .brief fieldset {
@@ -349,6 +400,7 @@ body[data-mood="contact"]  .bg-glow { --gx: 72%; --gy: 60%; --gc: rgba(212, 175,
 }
 
 .cf .brief input[type="text"],
+.cf .brief input[type="email"],
 .cf .brief textarea {
     width: 100%;
     padding: 12px 14px;
@@ -369,13 +421,15 @@ body[data-mood="contact"]  .bg-glow { --gx: 72%; --gy: 60%; --gc: rgba(212, 175,
 }
 
 .cf .brief input[type="text"]:focus,
+.cf .brief input[type="email"]:focus,
 .cf .brief textarea:focus {
     border-color: var(--accent);
 }
 
 .cf .letter {
     display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    align-content: start;
     overflow: hidden;
 }
 
@@ -457,6 +511,17 @@ body[data-mood="contact"]  .bg-glow { --gx: 72%; --gy: 60%; --gc: rgba(212, 175,
 @media (max-width: 900px) {
     .cf .collab {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .cf .field-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cf .brief-foot .send {
+        width: 100%;
+        justify-content: center;
     }
 }
 

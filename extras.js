@@ -288,18 +288,23 @@
     setInterval(tick, 30000);
 
     /* =====================================================
-       5. COLLABORATION EMAIL BUILDER
+       5. COLLABORATION FORM
+       A real form: it submits straight to the owner's inbox
+       (the address in the form's action). The preview on the
+       right shows the message as it will arrive.
     ===================================================== */
 
-    var brief = $("#collabBrief");
+    var cForm = $("#collabForm");
+    var addr = cForm ? cForm.getAttribute("action").split("/").pop() : "";
 
-    if (brief) {
-        var TO = brief.getAttribute("data-to");
-        var bodyEl = $("#letterBody"), subjEl = $("#letterSubject"), link = $("#mailtoBtn");
-        var nameEl = $("#cbName"), ideaEl = $("#cbIdea");
+    if (cForm) {
+        var cf = cForm.elements;
+        var wrap = $("#collabWrap"), sentBox = $("#collabSent"), cErr = $("#cFormError"), sendBtn2 = $("#cSend");
+        var bodyEl = $("#letterBody"), subjEl = $("#letterSubject"), fromEl = $("#letterFrom");
+        var C_KEY = "sn_collab_draft";
 
-        function checked(name) {
-            return $$('input[name="' + name + '"]:checked', brief).map(function (i) { return i.value; });
+        function topicsChecked() {
+            return $$('input[name="topics"]:checked', cForm);
         }
 
         function join(list) {
@@ -307,58 +312,166 @@
             return list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
         }
 
-        function build() {
-            var topics = checked("cb-topic");
-            var phrases = $$('input[name="cb-topic"]:checked', brief).map(function (i) { return i.getAttribute("data-phrase"); });
-            var format = checked("cb-format")[0] || "";
-            var name = nameEl.value.trim();
-            var idea = ideaEl.value.trim();
+        function fmt() {
+            var c = cForm.querySelector('input[name="format"]:checked');
+            return c ? c.value : "";
+        }
 
-            var subject = "Collaboration: " + (topics.length ? topics.join(" + ") : "an idea");
+        function compose() {
+            var t = topicsChecked();
+            var names = t.map(function (i) { return i.value; });
+            var phrases = t.map(function (i) { return i.getAttribute("data-phrase"); });
+            var name = cf.name.value.trim(), idea = cf.message.value.trim(), format = fmt();
+
+            var subject = "Collaboration: " + (names.length ? names.join(" + ") : "an idea");
             var lines = [
-                "Hi Shonisani,",
-                "",
+                "Hi Shonisani,", "",
                 "I came across your portfolio and I'd like to collaborate with you on " +
-                    (phrases.length ? join(phrases) : "something we could build together") + ".",
-                ""
+                    (phrases.length ? join(phrases) : "something we could build together") + "."
             ];
-            if (format) lines.push("Format: " + format.toLowerCase(), "");
-            lines.push(idea || "[Tell me a little about your idea here]", "", "Best,", name || "[Your name]");
+            lines.push("");
+            if (format) lines.push("Size: " + format.toLowerCase(), "");
+            lines.push(idea || "[Your idea goes here]", "", "Best,", name || "[Your name]");
 
-            var plain = lines.join("\n");
+            return { subject: subject, text: lines.join("\n"), topics: names, format: format };
+        }
 
-            subjEl.textContent = subject;
-            // show placeholders highlighted
+        function paint() {
+            var m = compose();
+            subjEl.textContent = m.subject;
+            fromEl.textContent = cf.email.value.trim() || "[your email]";
             bodyEl.textContent = "";
-            plain.split(/(\[[^\]]+\])/).forEach(function (part) {
+            m.text.split(/(\[[^\]]+\])/).forEach(function (part) {
                 if (/^\[[^\]]+\]$/.test(part)) {
                     var s = document.createElement("span"); s.className = "ph"; s.textContent = part; bodyEl.appendChild(s);
                 } else bodyEl.appendChild(document.createTextNode(part));
             });
-
-            link.href = "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(plain);
-            brief._plain = "To: " + TO + "\nSubject: " + subject + "\n\n" + plain;
+            return m;
         }
 
-        brief.addEventListener("input", build);
-        brief.addEventListener("change", build);
-        build();
+        /* ---- validation ---- */
+        var cRules = {
+            name: function (v) { return v.trim().length >= 2 ? "" : "Please tell me your name."; },
+            email: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "" : "I need a valid email so I can reply."; },
+            message: function (v) { return v.trim().length >= 10 ? "" : "A few more words about the idea, please (10+ characters)."; }
+        };
 
-        function copy(text, btn, done) {
-            function ok() {
-                var old = btn.textContent;
-                btn.textContent = done;
-                setTimeout(function () { btn.textContent = old; }, 1600);
-            }
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(ok, function () { window.prompt("Copy this:", text); });
-            } else {
-                window.prompt("Copy this:", text);
-            }
+        function cCheck(n) {
+            var msg = cRules[n](cf[n].value);
+            $("#cerr-" + n).textContent = msg;
+            cf[n].setAttribute("aria-invalid", msg ? "true" : "false");
+            return !msg;
         }
 
-        $("#copyDraft").addEventListener("click", function () { copy(brief._plain, this, "Copied ✓"); });
-        $("#copyAddr").addEventListener("click", function () { copy(TO, this, "Copied ✓"); });
+        ["name", "email", "message"].forEach(function (n) {
+            cf[n].addEventListener("blur", function () { if (cf[n].value) cCheck(n); });
+            cf[n].addEventListener("input", function () { if (cf[n].getAttribute("aria-invalid") === "true") cCheck(n); });
+        });
+
+        /* ---- draft (kept in this browser only) ---- */
+        var cTimer = null;
+        cForm.addEventListener("input", function () {
+            paint();
+            clearTimeout(cTimer);
+            cTimer = setTimeout(function () {
+                try {
+                    localStorage.setItem(C_KEY, JSON.stringify({
+                        name: cf.name.value, email: cf.email.value, message: cf.message.value,
+                        topics: topicsChecked().map(function (i) { return i.id; }),
+                        format: (cForm.querySelector('input[name="format"]:checked') || {}).id || ""
+                    }));
+                } catch (e) { /* ignore */ }
+            }, 600);
+        });
+        cForm.addEventListener("change", paint);
+
+        try {
+            var d = JSON.parse(localStorage.getItem(C_KEY) || "null");
+            if (d) {
+                cf.name.value = d.name || ""; cf.email.value = d.email || ""; cf.message.value = d.message || "";
+                (d.topics || []).forEach(function (id) { var el = document.getElementById(id); if (el) el.checked = true; });
+                if (d.format) { var fr = document.getElementById(d.format); if (fr) fr.checked = true; }
+            }
+        } catch (e) { /* ignore */ }
+
+        paint();
+
+        /* ---- sending ---- */
+        function cShowError(text, withMail) {
+            cErr.textContent = text + " ";
+            if (withMail) {
+                var m = compose(), a = document.createElement("a");
+                a.href = "mailto:" + addr + "?subject=" + encodeURIComponent(m.subject) + "&body=" + encodeURIComponent(m.text);
+                a.textContent = "Email me directly instead";
+                cErr.appendChild(a); cErr.appendChild(document.createTextNode("."));
+            }
+            cErr.hidden = false;
+        }
+
+        function cDone() {
+            cForm.classList.remove("is-sending");
+            sendBtn2.disabled = false;
+            sendBtn2.setAttribute("aria-busy", "false");
+        }
+
+        cForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            cErr.hidden = true;
+
+            var ok = ["name", "email", "message"].map(cCheck).every(Boolean);
+            if (!ok) { var bad = cForm.querySelector('[aria-invalid="true"]'); if (bad) bad.focus(); return; }
+
+            if (cf._honey && cf._honey.value) { finishCollab(compose()); return; }
+
+            try {
+                var last = Number(sessionStorage.getItem("sn_collab_sent_at") || 0);
+                if (Date.now() - last < 30000) { cShowError("You just sent one. Please give it a moment before sending another.", false); return; }
+            } catch (err) { /* ignore */ }
+
+            var m = compose();
+            cForm.classList.add("is-sending");
+            sendBtn2.disabled = true;
+            sendBtn2.setAttribute("aria-busy", "true");
+
+            var payload = {
+                name: cf.name.value.trim(),
+                email: cf.email.value.trim(),
+                collaborating_on: m.topics.join(", ") || "Not specified",
+                size: m.format || "Not specified",
+                message: cf.message.value.trim(),
+                _subject: "Collaboration · " + (m.topics.join(" + ") || "an idea") + " · from " + cf.name.value.trim(),
+                _template: "table",
+                _captcha: "false"
+            };
+
+            window.snSend(cForm, payload).then(function (r) {
+                if (r.status === "ok") { cDone(); finishCollab(m); }
+                else if (r.status === "fallback") {
+                    cShowError("Switching to the standard sending method…", false);
+                    window.snNative(cForm, payload);
+                } else if (r.status === "offline") {
+                    cDone(); cShowError("You seem to be offline. Your idea is saved here, so try again when you're back online.", true);
+                } else {
+                    cDone(); cShowError("It didn't go through" + (r.message ? " (" + r.message + ")" : "") + ".", true);
+                }
+            });
+        });
+
+        function finishCollab(m) {
+            $("#crTopics").textContent = m.topics.join(", ") || "an idea";
+            $("#crFrom").textContent = cf.email.value.trim();
+            $("#crTime").textContent = "today, " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            try { sessionStorage.setItem("sn_collab_sent_at", String(Date.now())); localStorage.removeItem(C_KEY); } catch (e) { /* ignore */ }
+            wrap.hidden = true;
+            sentBox.hidden = false;
+            $("#collabSentTitle").focus();
+        }
+
+        $("#collabAnother").addEventListener("click", function () {
+            cForm.reset(); paint();
+            sentBox.hidden = true; wrap.hidden = false;
+            cf.name.focus();
+        });
     }
 
     /* =====================================================
@@ -368,7 +481,6 @@
     var pal = $("#palette"), input = $("#palInput"), list = $("#palList");
     var opener = null, shown = [], sel = 0;
 
-    var addr = brief ? brief.getAttribute("data-to") : "";
 
     function go(id) {
         var el = document.getElementById(id);
@@ -385,7 +497,7 @@
         { t: "Collaborate with me", k: "email", f: function () { go("collab"); } },
         { t: "Send me a message", k: "section", f: function () { go("contact"); } },
         { t: "Toggle light / dark theme", k: "action", f: function () { var b = $("#themeToggle"); if (b) b.click(); } },
-        { t: "Email me about a collaboration", k: "email", f: function () { if (addr) window.location.href = "mailto:" + addr + "?subject=" + encodeURIComponent("Collaboration idea"); } },
+        { t: "Send me a collaboration idea", k: "email", f: function () { go("collab"); } },
         { t: "Copy my email address", k: "action", f: function () { if (navigator.clipboard && addr) navigator.clipboard.writeText(addr); } },
         { t: "Open GitHub", k: "link", f: function () { window.open("https://github.com/Sanieeme", "_blank", "noopener"); } },
         { t: "Open LinkedIn", k: "link", f: function () { window.open("https://www.linkedin.com/in/shonisani-n-b7574a22/", "_blank", "noopener"); } },

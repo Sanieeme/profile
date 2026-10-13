@@ -12,6 +12,60 @@
     function $(s, c) { return (c || document).querySelector(s); }
     function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
 
+
+    /* -----------------------------------------------------
+       SHARED SENDER  (used by the contact form AND the
+       collaboration form). Both deliver to ONE inbox: the
+       address in each form's action attribute.
+       1) try the quick AJAX route (no page change)
+       2) if the browser blocks that (e.g. page opened from a
+          file, strict network), fall back to a normal form
+          post so the message still gets through
+    ----------------------------------------------------- */
+
+    window.snSend = function (form, payload) {
+        var url = form.getAttribute("action").replace("formsubmit.co/", "formsubmit.co/ajax/");
+        var ctrl = window.AbortController ? new AbortController() : null;
+        var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
+
+        return fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify(payload),
+            signal: ctrl ? ctrl.signal : undefined
+        })
+            .then(function (res) {
+                return res.json().catch(function () { return {}; }).then(function (d) {
+                    clearTimeout(timer);
+                    var good = res.ok && (d.success === true || d.success === "true");
+                    return good ? { status: "ok" } : { status: "error", message: d.message };
+                });
+            })
+            .catch(function () {
+                clearTimeout(timer);
+                return { status: navigator.onLine === false ? "offline" : "fallback" };
+            });
+    };
+
+    window.snNative = function (form, payload) {
+        var f = document.createElement("form");
+        f.method = "POST";
+        f.action = form.getAttribute("action");
+        f.style.display = "none";
+
+        var data = {};
+        Object.keys(payload).forEach(function (k) { data[k] = payload[k]; });
+        data._next = new URL("thankyou.html", window.location.href).href;
+
+        Object.keys(data).forEach(function (k) {
+            var i = document.createElement("input");
+            i.type = "hidden"; i.name = k; i.value = data[k];
+            f.appendChild(i);
+        });
+        document.body.appendChild(f);
+        f.submit();
+    };
+
     /* -----------------------------------------------------
        THEME
     ----------------------------------------------------- */
@@ -297,9 +351,6 @@
         sendBtn.disabled = true;
         sendBtn.setAttribute("aria-busy", "true");
 
-        var ctrl = window.AbortController ? new AbortController() : null;
-        var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
-
         var payload = {
             name: f.name.value.trim(),
             email: f.email.value.trim(),
@@ -310,29 +361,19 @@
             _captcha: "false"
         };
 
-        fetch(AJAX_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify(payload),
-            signal: ctrl ? ctrl.signal : undefined
-        })
-            .then(function (res) {
-                return res.json().catch(function () { return {}; }).then(function (data) {
-                    return { ok: res.ok, data: data };
-                });
-            })
-            .then(function (r) {
-                clearTimeout(timer);
+        window.snSend(form, payload).then(function (r) {
+            if (r.status === "ok") { finishSending(); showSent(); }
+            else if (r.status === "fallback") {
+                showError("Switching to the standard sending method…", false);
+                window.snNative(form, payload);          // leaves the page, lands on thankyou.html
+            } else if (r.status === "offline") {
                 finishSending();
-                var good = r.ok && (r.data.success === true || r.data.success === "true");
-                if (good) showSent();
-                else showError("The message didn't go through" + (r.data && r.data.message ? " (" + r.data.message + ")" : "") + ".", true);
-            })
-            .catch(function () {
-                clearTimeout(timer);
+                showError("You seem to be offline. Your message is saved here, so try again when you're back online.", true);
+            } else {
                 finishSending();
-                showError("I couldn't reach the mail service just now. Your message is still here, nothing is lost.", true);
-            });
+                showError("The message didn't go through" + (r.message ? " (" + r.message + ")" : "") + ".", true);
+            }
+        });
     });
 
     $("#sendAnother").addEventListener("click", function () {
