@@ -33,7 +33,7 @@
        which needs a one-time activation email to be clicked first.
     --------------------------------------------------------- */
 
-    var WEB3FORMS_KEY = "PASTE_WEB3FORMS_ACCESS_KEY_HERE";
+    var WEB3FORMS_KEY = "bb61e8f4-91ae-4095-9278-9535e4a901c9";
 
     var W3 = (window.SN_WEB3FORMS_KEY || WEB3FORMS_KEY || "").trim();
     var useW3 = W3 !== "" && W3.indexOf("PASTE_") !== 0;
