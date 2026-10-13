@@ -624,6 +624,12 @@
                         </div>
 
                         <div class="field">
+                            <label class="lab" for="cbGithub">Your GitHub</label>
+                            <input type="text" id="cbGithub" name="github" autocomplete="off" placeholder="username or github.com/username" maxlength="100" required>
+                            <p class="err" id="cerr-github" role="alert"></p>
+                        </div>
+
+                        <div class="field">
                             <label class="lab" for="cbIdea">Tell me about your idea</label>
                             <textarea id="cbIdea" name="message" maxlength="1500" placeholder="What are you hoping to build, and where could I help?" required></textarea>
                             <p class="err" id="cerr-message" role="alert"></p>

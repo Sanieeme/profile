@@ -349,10 +349,18 @@
             return m;
         }
 
+        /* ---- GitHub: accept a username, @username or a github.com link ---- */
+        function ghUser(v) {
+            v = (v || "").trim().replace(/^https?:\/\//i, "").replace(/^www\./i, "")
+                .replace(/^github\.com\//i, "").replace(/^@/, "").split(/[\/?#]/)[0];
+            return /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(v) ? v : "";
+        }
+
         /* ---- validation ---- */
         var cRules = {
             name: function (v) { return v.trim().length >= 2 ? "" : "Please tell me your name."; },
             email: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "" : "I need a valid email so I can reply."; },
+            github: function (v) { return ghUser(v) ? "" : "Please add your GitHub username or profile link."; },
             message: function (v) { return v.trim().length >= 10 ? "" : "A few more words about the idea, please (10+ characters)."; }
         };
 
@@ -363,7 +371,7 @@
             return !msg;
         }
 
-        ["name", "email", "message"].forEach(function (n) {
+        ["name", "email", "github", "message"].forEach(function (n) {
             cf[n].addEventListener("blur", function () { if (cf[n].value) cCheck(n); });
             cf[n].addEventListener("input", function () { if (cf[n].getAttribute("aria-invalid") === "true") cCheck(n); });
         });
@@ -376,7 +384,7 @@
             cTimer = setTimeout(function () {
                 try {
                     localStorage.setItem(C_KEY, JSON.stringify({
-                        name: cf.name.value, email: cf.email.value, message: cf.message.value,
+                        name: cf.name.value, email: cf.email.value, github: cf.github.value, message: cf.message.value,
                         topics: topicsChecked().map(function (i) { return i.id; }),
                         format: (cForm.querySelector('input[name="format"]:checked') || {}).id || ""
                     }));
@@ -388,7 +396,7 @@
         try {
             var d = JSON.parse(localStorage.getItem(C_KEY) || "null");
             if (d) {
-                cf.name.value = d.name || ""; cf.email.value = d.email || ""; cf.message.value = d.message || "";
+                cf.name.value = d.name || ""; cf.email.value = d.email || ""; cf.github.value = d.github || ""; cf.message.value = d.message || "";
                 (d.topics || []).forEach(function (id) { var el = document.getElementById(id); if (el) el.checked = true; });
                 if (d.format) { var fr = document.getElementById(d.format); if (fr) fr.checked = true; }
             }
@@ -418,7 +426,7 @@
             e.preventDefault();
             cErr.hidden = true;
 
-            var ok = ["name", "email", "message"].map(cCheck).every(Boolean);
+            var ok = ["name", "email", "github", "message"].map(cCheck).every(Boolean);
             if (!ok) { var bad = cForm.querySelector('[aria-invalid="true"]'); if (bad) bad.focus(); return; }
 
             if (cf._honey && cf._honey.value) { finishCollab(compose()); return; }
@@ -436,6 +444,7 @@
             var payload = {
                 name: cf.name.value.trim(),
                 email: cf.email.value.trim(),
+                github: "https://github.com/" + ghUser(cf.github.value),
                 collaborating_on: m.topics.join(", ") || "Not specified",
                 size: m.format || "Not specified",
                 message: cf.message.value.trim(),
