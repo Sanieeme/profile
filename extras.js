@@ -295,7 +295,7 @@
     ===================================================== */
 
     var cForm = $("#collabForm");
-    var addr = cForm ? cForm.getAttribute("action").split("/").pop() : "";
+    var addr = "shoneesani@gmail.com";
 
     if (cForm) {
         var cf = cForm.elements;

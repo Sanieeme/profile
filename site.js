@@ -268,7 +268,7 @@
 
     var MAX = 2000;
     var AJAX_URL = form.getAttribute("action").replace("formsubmit.co/", "formsubmit.co/ajax/");
-    var TO_ADDR = form.getAttribute("action").split("/").pop();
+    var TO_ADDR = "shoneesani@gmail.com";
     var DRAFT_KEY = "sn_contact_draft";
     var COOLDOWN_MS = 30000;
 
