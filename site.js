@@ -38,13 +38,26 @@
                 return res.json().catch(function () { return {}; }).then(function (d) {
                     clearTimeout(timer);
                     var good = res.ok && (d.success === true || d.success === "true");
-                    return good ? { status: "ok" } : { status: "error", message: d.message };
+                    if (window.console) console.info("FormSubmit replied:", res.status, d);
+                    return good ? { status: "ok", message: d.message || "" } : { status: "error", message: d.message };
                 });
             })
             .catch(function () {
                 clearTimeout(timer);
                 return { status: navigator.onLine === false ? "offline" : "fallback" };
             });
+    };
+
+    // FormSubmit holds messages until the owner activates the form once (an email is sent to the inbox)
+    window.snNote = function (el, message) {
+        if (!el) return;
+        var needs = /activat/i.test(message || "");
+        el.hidden = !needs;
+        if (needs) {
+            el.textContent = "Note for the site owner: FormSubmit says this form still needs a one-time activation. " +
+                "Check your inbox (and Spam / Promotions) for an email from FormSubmit and click the activation link. " +
+                "Messages are delivered after that.";
+        }
     };
 
     window.snNative = function (form, payload, onBlocked) {
@@ -365,7 +378,7 @@
         };
 
         window.snSend(form, payload).then(function (r) {
-            if (r.status === "ok") { finishSending(); showSent(); }
+            if (r.status === "ok") { finishSending(); showSent(); window.snNote($("#sentNote"), r.message); }
             else if (r.status === "fallback") {
                 showError("Switching to the standard sending method…", false);
                 window.snNative(form, payload, function () {   // only runs if the page didn't navigate away

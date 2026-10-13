@@ -540,3 +540,19 @@ body[data-mood="contact"]  .bg-glow { --gx: 72%; --gy: 60%; --gc: rgba(212, 175,
         transition: none;
     }
 }
+
+/* shown only if FormSubmit reports the form still needs activating */
+.cf .sent-note {
+    margin: 0;
+    padding: 12px 14px;
+    border: 1px solid #d99a1a;
+    border-radius: 8px;
+    background: color-mix(in srgb, #d99a1a 12%, var(--bg2));
+    color: var(--fg);
+    font-size: 0.85rem;
+    line-height: 1.55;
+}
+
+.cf .sent-note[hidden] {
+    display: none;
+}

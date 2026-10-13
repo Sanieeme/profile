@@ -445,7 +445,7 @@
             };
 
             window.snSend(cForm, payload).then(function (r) {
-                if (r.status === "ok") { cDone(); finishCollab(m); }
+                if (r.status === "ok") { cDone(); finishCollab(m); window.snNote($("#collabNote"), r.message); }
                 else if (r.status === "fallback") {
                     cShowError("Switching to the standard sending method…", false);
                     window.snNative(cForm, payload, function () {
