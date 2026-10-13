@@ -698,7 +698,7 @@
                                 Private by design
                             </span>
                             <p>Your message goes to one inbox: mine. It is never posted on this site and nobody else receives a copy.</p>
-                            <small>It is relayed by Web3Forms, a mail-forwarding service. I reply from my own email, to the address you give.</small>
+                            <small>It is relayed by Web3Forms, a mail-forwarding service. Only your name and message are sent.</small>
                         </div>
 
                         <dl class="mail-facts">
@@ -759,12 +759,6 @@
                                 </div>
 
                                 <div class="row">
-                                    <label for="c-email">Reply to</label>
-                                    <input type="email" id="c-email" name="email" placeholder="you@company.com" autocomplete="email" required maxlength="120">
-                                    <p class="err" id="err-email" role="alert"></p>
-                                </div>
-
-                                <div class="row">
                                     <span class="row-k" id="topic-k">About</span>
                                     <fieldset class="topics" aria-labelledby="topic-k">
                                         <input type="radio" name="topic" id="t1" value="Graduate role" checked><label for="t1">Graduate role</label>
@@ -801,11 +795,10 @@
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
                             </span>
                             <h3 id="sentTitle" tabindex="-1">Message <em>sent</em>.</h3>
-                            <p>Thank you. It went straight to my inbox, and I'll reply to the email address you gave.</p>
+                            <p>Thank you. It went straight to my inbox.</p>
                             <div class="sent-receipt">
                                 To: <b>Shonisani Netshidzivhani</b><br>
                                 About: <b id="rcTopic"></b><br>
-                                Reply to: <b id="rcFrom"></b><br>
                                 Sent: <b id="rcTime"></b>
                             </div>
                             <p class="sent-note" id="sentNote" hidden></p>
