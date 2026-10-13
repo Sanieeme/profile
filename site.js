@@ -23,23 +23,50 @@
           post so the message still gets through
     ----------------------------------------------------- */
 
+    /* ---------------------------------------------------------
+       EMAIL DELIVERY SETTINGS
+       Option 1 (recommended): Web3Forms. Get a free access key at
+       https://web3forms.com (enter your email, the key is emailed
+       to you), then paste it between the quotes below. No
+       activation step: messages arrive in that inbox straight away.
+       Option 2: leave it as it is and the site uses FormSubmit,
+       which needs a one-time activation email to be clicked first.
+    --------------------------------------------------------- */
+
+    var WEB3FORMS_KEY = "PASTE_WEB3FORMS_ACCESS_KEY_HERE";
+
+    var W3 = (window.SN_WEB3FORMS_KEY || WEB3FORMS_KEY || "").trim();
+    var useW3 = W3 !== "" && W3.indexOf("PASTE_") !== 0;
+
+    function w3Payload(payload) {
+        var p = {};
+        Object.keys(payload).forEach(function (k) { if (k.charAt(0) !== "_") p[k] = payload[k]; });
+        p.access_key = W3;
+        p.subject = payload._subject || "New message from your portfolio";
+        p.from_name = "Portfolio website";
+        return p;
+    }
+
     window.snSend = function (form, payload) {
-        var url = form.getAttribute("action").replace("formsubmit.co/", "formsubmit.co/ajax/");
+        var url = useW3 ? "https://api.web3forms.com/submit"
+                        : form.getAttribute("action").replace("formsubmit.co/", "formsubmit.co/ajax/");
+        var body = useW3 ? w3Payload(payload) : payload;
         var ctrl = window.AbortController ? new AbortController() : null;
         var timer = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
 
         return fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify(payload),
+            body: JSON.stringify(body),
             signal: ctrl ? ctrl.signal : undefined
         })
             .then(function (res) {
                 return res.json().catch(function () { return {}; }).then(function (d) {
                     clearTimeout(timer);
+                    if (window.console) console.info((useW3 ? "Web3Forms" : "FormSubmit") + " replied:", res.status, d);
+                    var msg = d.message || (d.body && d.body.message) || "";
                     var good = res.ok && (d.success === true || d.success === "true");
-                    if (window.console) console.info("FormSubmit replied:", res.status, d);
-                    return good ? { status: "ok", message: d.message || "" } : { status: "error", message: d.message };
+                    return good ? { status: "ok", message: msg } : { status: "error", message: msg };
                 });
             })
             .catch(function () {
@@ -63,12 +90,18 @@
     window.snNative = function (form, payload, onBlocked) {
         var f = document.createElement("form");
         f.method = "POST";
-        f.action = form.getAttribute("action");
+        f.action = useW3 ? "https://api.web3forms.com/submit" : form.getAttribute("action");
         f.style.display = "none";
 
         var data = {};
-        Object.keys(payload).forEach(function (k) { data[k] = payload[k]; });
-        data._next = new URL("thankyou.html", window.location.href).href;
+        var thanks = new URL("thankyou.html", window.location.href).href;
+        if (useW3) {
+            data = w3Payload(payload);
+            data.redirect = thanks;
+        } else {
+            Object.keys(payload).forEach(function (k) { data[k] = payload[k]; });
+            data._next = thanks;
+        }
 
         Object.keys(data).forEach(function (k) {
             var i = document.createElement("input");
