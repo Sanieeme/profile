@@ -69,7 +69,8 @@
                     // FormSubmit answers "success" while still HOLDING the message until the owner
                     // activates the form. That is not a delivery, so never report it as one.
                     if (!useW3 && /activat/i.test(msg)) {
-                        return { status: "error", message: "the inbox owner has not activated this form yet" };
+                        if (window.console) console.warn("FormSubmit: activation needed. Open the inbox for the address in the form action (check Spam/Promotions), find the email from FormSubmit and click the activation link. Then submit the form again.");
+                        return { status: "error", message: "this form is not activated yet. Site owner: click the activation link in the FormSubmit email, then try again" };
                     }
                     return good ? { status: "ok", message: msg } : { status: "error", message: msg };
                 });
