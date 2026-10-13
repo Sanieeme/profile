@@ -47,7 +47,7 @@
             });
     };
 
-    window.snNative = function (form, payload) {
+    window.snNative = function (form, payload, onBlocked) {
         var f = document.createElement("form");
         f.method = "POST";
         f.action = form.getAttribute("action");
@@ -64,6 +64,9 @@
         });
         document.body.appendChild(f);
         f.submit();
+
+        // if the page is still here a few seconds later, the browser blocked the post
+        if (onBlocked) setTimeout(onBlocked, 5000);
     };
 
     /* -----------------------------------------------------
@@ -365,7 +368,10 @@
             if (r.status === "ok") { finishSending(); showSent(); }
             else if (r.status === "fallback") {
                 showError("Switching to the standard sending method…", false);
-                window.snNative(form, payload);          // leaves the page, lands on thankyou.html
+                window.snNative(form, payload, function () {   // only runs if the page didn't navigate away
+                    finishSending();
+                    showError("This page couldn't send the message (the browser blocked it). Nothing was delivered.", true);
+                });
             } else if (r.status === "offline") {
                 finishSending();
                 showError("You seem to be offline. Your message is saved here, so try again when you're back online.", true);

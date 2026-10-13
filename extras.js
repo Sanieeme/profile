@@ -448,7 +448,10 @@
                 if (r.status === "ok") { cDone(); finishCollab(m); }
                 else if (r.status === "fallback") {
                     cShowError("Switching to the standard sending method…", false);
-                    window.snNative(cForm, payload);
+                    window.snNative(cForm, payload, function () {
+                        cDone();
+                        cShowError("This page couldn't send the message (the browser blocked it). Nothing was delivered.", true);
+                    });
                 } else if (r.status === "offline") {
                     cDone(); cShowError("You seem to be offline. Your idea is saved here, so try again when you're back online.", true);
                 } else {
