@@ -487,6 +487,102 @@
     }
 
     /* =====================================================
+       5b. ANONYMOUS SUGGESTION BOX
+       Sends only a category and a message: no name, no email.
+    ===================================================== */
+
+    var sForm = $("#suggestForm");
+
+    if (sForm) {
+        var sf = sForm.elements;
+        var sErr = $("#sFormError"), sBtn = $("#sSend"), sBox = $("#suggestSent"), sWrap = sForm.parentNode;
+
+        function sCat() {
+            var c = sForm.querySelector('input[name="category"]:checked');
+            return c ? c.value : "Something else";
+        }
+
+        function sCheck() {
+            var ok = sf.message.value.trim().length >= 10;
+            $("#serr-message").textContent = ok ? "" : "A few more words, please (at least 10 characters).";
+            sf.message.setAttribute("aria-invalid", ok ? "false" : "true");
+            return ok;
+        }
+
+        sf.message.addEventListener("input", function () {
+            if (sf.message.getAttribute("aria-invalid") === "true") sCheck();
+        });
+
+        function sShowError(text) {
+            sErr.textContent = text;
+            sErr.hidden = false;
+        }
+
+        function sDone() {
+            sForm.classList.remove("is-sending");
+            sBtn.disabled = false;
+            sBtn.setAttribute("aria-busy", "false");
+        }
+
+        function sSent(note) {
+            $("#srTopic").textContent = sCat();
+            $("#srTime").textContent = "today, " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            try { sessionStorage.setItem("sn_suggest_sent_at", String(Date.now())); } catch (e) { /* ignore */ }
+            sWrap.hidden = true;
+            sBox.hidden = false;
+            if (note !== undefined) window.snNote($("#suggestNote"), note);
+            $("#suggestSentTitle").focus();
+        }
+
+        sForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            sErr.hidden = true;
+
+            if (!sCheck()) { sf.message.focus(); return; }
+            if (sf._honey && sf._honey.value) { sSent(); return; }
+
+            try {
+                var last = Number(sessionStorage.getItem("sn_suggest_sent_at") || 0);
+                if (Date.now() - last < 30000) { sShowError("You just sent one. Please give it a moment before sending another."); return; }
+            } catch (err) { /* ignore */ }
+
+            sForm.classList.add("is-sending");
+            sBtn.disabled = true;
+            sBtn.setAttribute("aria-busy", "true");
+
+            var payload = {
+                category: sCat(),
+                message: sf.message.value.trim(),
+                _subject: "Anonymous suggestion · " + sCat(),
+                _template: "table",
+                _captcha: "false"
+            };
+
+            window.snSend(sForm, payload).then(function (r) {
+                if (r.status === "ok") { sDone(); sSent(r.message); }
+                else if (r.status === "fallback") {
+                    sShowError("Switching to the standard sending method…");
+                    window.snNative(sForm, payload, function () {
+                        sDone();
+                        sShowError("This page couldn't send the suggestion (the browser blocked it). Nothing was delivered.");
+                    });
+                } else if (r.status === "offline") {
+                    sDone(); sShowError("You seem to be offline. Please try again when you're back online.");
+                } else {
+                    sDone(); sShowError("It didn't go through" + (r.message ? " (" + r.message + ")" : "") + ".");
+                }
+            });
+        });
+
+        $("#suggestAnother").addEventListener("click", function () {
+            sForm.reset();
+            sBox.hidden = true;
+            sWrap.hidden = false;
+            sf.message.focus();
+        });
+    }
+
+    /* =====================================================
        6. COMMAND PALETTE  (Ctrl/⌘ + K  or  /)
     ===================================================== */
 
@@ -508,6 +604,7 @@
         { t: "Go to Case notes", k: "section", f: function () { go("notes"); } },
         { t: "Collaborate with me", k: "email", f: function () { go("collab"); } },
         { t: "Send me a message", k: "section", f: function () { go("contact"); } },
+        { t: "Anonymous suggestion box", k: "section", f: function () { go("suggest"); } },
         { t: "Toggle light / dark theme", k: "action", f: function () { var b = $("#themeToggle"); if (b) b.click(); } },
         { t: "Send me a collaboration idea", k: "email", f: function () { go("collab"); } },
         { t: "Copy my email address", k: "action", f: function () { if (navigator.clipboard && addr) navigator.clipboard.writeText(addr); } },

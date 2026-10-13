@@ -826,6 +826,83 @@
 
         </div>
 
+        <div class="cf">
+
+            <section id="suggest"
+                     class="collab-block"
+                     aria-labelledby="suggest-title">
+
+                <div class="sec-head">
+                    <p class="eyebrow"><b>Feedback</b> · anonymous</p>
+                    <h2 id="suggest-title">Got a suggestion about this <em>profile</em>?</h2>
+                    <p class="sub">Tell me what could be better: the design, the projects, the wording, anything. No name and no email are asked for or sent with it.</p>
+                </div>
+
+                <div style="max-width:640px">
+
+                    <form class="brief"
+                          id="suggestForm"
+                          action="https://api.web3forms.com/submit"
+                          method="POST"
+                          novalidate
+                          aria-label="Anonymous suggestion">
+
+                        <span class="sendline" aria-hidden="true"></span>
+
+                        <div class="hp" aria-hidden="true">
+                            <label>Leave this empty <input type="text" name="_honey" tabindex="-1" autocomplete="off"></label>
+                        </div>
+
+                        <fieldset>
+                            <legend>It is about…</legend>
+                            <div class="chips">
+                                <input type="radio" name="category" id="sg1" value="Design" checked><label for="sg1">Design</label>
+                                <input type="radio" name="category" id="sg2" value="Projects"><label for="sg2">Projects</label>
+                                <input type="radio" name="category" id="sg3" value="Content and wording"><label for="sg3">Content &amp; wording</label>
+                                <input type="radio" name="category" id="sg4" value="Something else"><label for="sg4">Something else</label>
+                            </div>
+                        </fieldset>
+
+                        <div class="field">
+                            <label class="lab" for="sgMessage">Your suggestion</label>
+                            <textarea id="sgMessage" name="message" maxlength="1500" placeholder="What would make this profile better?" required></textarea>
+                            <p class="err" id="serr-message" role="alert"></p>
+                        </div>
+
+                        <p class="form-error" id="sFormError" role="alert" hidden></p>
+
+                        <div class="brief-foot">
+                            <p class="win-note">Anonymous. Nothing about you is asked for.</p>
+                            <button type="submit" class="send" id="sSend">
+                                <span class="spin" aria-hidden="true"></span>
+                                Send suggestion
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="sent" id="suggestSent" hidden>
+                    <span class="plane" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+                    </span>
+                    <h3 id="suggestSentTitle" tabindex="-1">Suggestion <em>received</em>.</h3>
+                    <p>Thank you. It went to my inbox without any name or email attached.</p>
+                    <div class="sent-receipt">
+                        To: <b>Shonisani Netshidzivhani</b><br>
+                        About: <b id="srTopic"></b><br>
+                        Sent: <b id="srTime"></b>
+                    </div>
+                    <p class="sent-note" id="suggestNote" hidden></p>
+                    <button type="button" class="btn-sm" id="suggestAnother">Send another suggestion</button>
+                </div>
+
+            </section>
+
+        </div>
+
     </main>
 
 
@@ -871,6 +948,8 @@
                 <a href="#contact">
                     Contact
                 </a>
+
+                <a href="#suggest">Suggestions</a>
 
             </div>
 
