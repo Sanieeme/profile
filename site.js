@@ -66,6 +66,11 @@
                     if (window.console) console.info((useW3 ? "Web3Forms" : "FormSubmit") + " replied:", res.status, d);
                     var msg = d.message || (d.body && d.body.message) || "";
                     var good = res.ok && (d.success === true || d.success === "true");
+                    // FormSubmit answers "success" while still HOLDING the message until the owner
+                    // activates the form. That is not a delivery, so never report it as one.
+                    if (!useW3 && /activat/i.test(msg)) {
+                        return { status: "error", message: "the inbox owner has not activated this form yet" };
+                    }
                     return good ? { status: "ok", message: msg } : { status: "error", message: msg };
                 });
             })
